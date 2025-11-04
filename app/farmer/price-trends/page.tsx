@@ -217,9 +217,9 @@ export default function PriceTrendsPage() {
                       cursor={{ stroke: 'var(--color-primary)', strokeWidth: 2 }}
                     />
                     <Legend
-                      wrapperStyle={{ color: 'var(--color-text)' }}
-                      contentStyle={{
-                        backgroundColor: 'transparent',
+                      wrapperStyle={{ 
+                        color: 'var(--color-text)',
+                        backgroundColor: 'transparent'
                       }}
                     />
                     {selectedVegetables.map((veg, idx) => (
