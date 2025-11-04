@@ -178,10 +178,10 @@ export default function ForumPage() {
           {/* Header */}
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-3xl font-bold text-[var(--color-text)] mb-2">
+              <h1 className="text-3xl font-bold text-(--color-text) mb-2">
                 Community Forum
               </h1>
-              <p className="text-[var(--color-text-secondary)]">
+              <p className="text-(--color-text-secondary)">
                 Share knowledge and learn from fellow farmers
               </p>
             </div>
@@ -234,7 +234,7 @@ export default function ForumPage() {
                 <ModernCard hoverable>
                   <div className="flex items-start gap-4">
                   {/* User Avatar */}
-                  <div className="w-12 h-12 rounded-full bg-[var(--color-primary)] flex items-center justify-center text-white font-bold flex-shrink-0">
+                  <div className="w-12 h-12 rounded-full bg-(--color-primary) flex items-center justify-center text-white font-bold shrink-0">
                     {post.user_name.charAt(0)}
                   </div>
 
@@ -242,10 +242,10 @@ export default function ForumPage() {
                   <div className="flex-1 min-w-0">
                     <div className="flex items-start justify-between gap-2 mb-2">
                       <div className="flex-1">
-                        <h3 className="text-lg font-semibold text-[var(--color-text)] mb-1">
+                        <h3 className="text-lg font-semibold text-(--color-text) mb-1">
                           {post.title}
                         </h3>
-                        <div className="flex items-center gap-2 text-sm text-[var(--color-text-muted)]">
+                        <div className="flex items-center gap-2 text-sm text-(--color-text-muted)">
                           <span className="font-medium">{post.user_name}</span>
                           <span>•</span>
                           <span>{formatRelativeTime(post.created_at)}</span>
@@ -256,27 +256,27 @@ export default function ForumPage() {
                       </Badge>
                     </div>
 
-                    <p className="text-[var(--color-text-secondary)] mb-3 line-clamp-2">
+                    <p className="text-(--color-text-secondary) mb-3 line-clamp-2">
                       {post.body}
                     </p>
 
                     {/* Post Stats */}
-                    <div className="flex items-center gap-4 text-sm text-[var(--color-text-muted)]">
+                    <div className="flex items-center gap-4 text-sm text-(--color-text-muted)">
                       <button 
                         onClick={(e) => {
                           e.stopPropagation();
                           handleLikePost(post._id);
                         }}
-                        className="flex items-center gap-1 hover:text-[var(--color-primary)] transition-colors"
+                        className="flex items-center gap-1 hover:text-(--color-primary) transition-colors"
                       >
                         <Heart className="w-4 h-4" />
                         <span>{post.likes}</span>
                       </button>
-                      <button className="flex items-center gap-1 hover:text-[var(--color-primary)] transition-colors">
+                      <button className="flex items-center gap-1 hover:text-(--color-primary) transition-colors">
                         <MessageCircle className="w-4 h-4" />
                         <span>{post.comments?.length || 0}</span>
                       </button>
-                      <button className="flex items-center gap-1 hover:text-[var(--color-primary)] transition-colors">
+                      <button className="flex items-center gap-1 hover:text-(--color-primary) transition-colors">
                         <Eye className="w-4 h-4" />
                         <span>View Details</span>
                       </button>
@@ -292,11 +292,11 @@ export default function ForumPage() {
           {filteredPosts.length === 0 && (
             <ModernCard>
               <div className="text-center py-12">
-                <MessageCircle className="w-12 h-12 mx-auto mb-4 text-[var(--color-text-muted)]" />
-                <p className="text-lg font-medium text-[var(--color-text)]">
+                <MessageCircle className="w-12 h-12 mx-auto mb-4 text-(--color-text-muted)" />
+                <p className="text-lg font-medium text-(--color-text)">
                   No posts found
                 </p>
-                <p className="text-[var(--color-text-muted)] mb-4">
+                <p className="text-(--color-text-muted) mb-4">
                   Try adjusting your search or filters
                 </p>
                 <ModernButton
@@ -324,16 +324,16 @@ export default function ForumPage() {
           {selectedPost && (
             <div className="space-y-4">
               {/* Post Header */}
-              <div className="pb-4 border-b border-[var(--color-border)]">
+              <div className="pb-4 border-b border-(--color-border)">
                 <div className="flex items-start gap-3 mb-4">
-                  <div className="w-10 h-10 rounded-full bg-[var(--color-primary)] flex items-center justify-center text-white font-bold shrink-0">
+                  <div className="w-10 h-10 rounded-full bg-(--color-primary) flex items-center justify-center text-white font-bold shrink-0">
                     {selectedPost.user_name.charAt(0)}
                   </div>
                   <div className="flex-1">
-                    <p className="font-medium text-[var(--color-text)]">
+                    <p className="font-medium text-(--color-text)">
                       {selectedPost.user_name}
                     </p>
-                    <p className="text-sm text-[var(--color-text-muted)]">
+                    <p className="text-sm text-(--color-text-muted)">
                       {formatRelativeTime(selectedPost.created_at)}
                     </p>
                   </div>
@@ -345,21 +345,21 @@ export default function ForumPage() {
 
               {/* Post Body */}
               <div>
-                <p className="text-[var(--color-text)] whitespace-pre-wrap">
+                <p className="text-(--color-text) whitespace-pre-wrap">
                   {selectedPost.body}
                 </p>
               </div>
 
               {/* Post Stats */}
-              <div className="flex items-center gap-6 pt-4 border-t border-[var(--color-border)] text-sm text-[var(--color-text-muted)]">
+              <div className="flex items-center gap-6 pt-4 border-t border-(--color-border) text-sm text-(--color-text-muted)">
                 <button 
                   onClick={() => handleLikePost(selectedPost._id)}
-                  className="flex items-center gap-2 hover:text-[var(--color-primary)] transition-colors"
+                  className="flex items-center gap-2 hover:text-(--color-primary) transition-colors"
                 >
                   <Heart className="w-4 h-4" />
                   <span>{selectedPost.likes}</span>
                 </button>
-                <button className="flex items-center gap-2 hover:text-[var(--color-primary)] transition-colors">
+                <button className="flex items-center gap-2 hover:text-(--color-primary) transition-colors">
                   <MessageCircle className="w-4 h-4" />
                   <span>{selectedPost.comments?.length || 0} Comments</span>
                 </button>
@@ -367,32 +367,32 @@ export default function ForumPage() {
 
               {/* Comments Section */}
               {selectedPost.comments && selectedPost.comments.length > 0 && (
-                <div className="pt-4 border-t border-[var(--color-border)]">
-                  <h4 className="font-semibold text-[var(--color-text)] mb-4">
+                <div className="pt-4 border-t border-(--color-border)">
+                  <h4 className="font-semibold text-(--color-text) mb-4">
                     Comments ({selectedPost.comments.length})
                   </h4>
                   <div className="space-y-3">
                     {selectedPost.comments.map((comment) => (
-                      <div key={comment.comment_id} className="flex gap-3 p-3 bg-[var(--color-bg-secondary)] rounded-lg">
-                        <div className="w-8 h-8 rounded-full bg-[var(--color-primary)] flex items-center justify-center text-white text-sm font-bold shrink-0">
+                      <div key={comment.comment_id} className="flex gap-3 p-3 bg-(--color-bg-secondary) rounded-lg">
+                        <div className="w-8 h-8 rounded-full bg-(--color-primary) flex items-center justify-center text-white text-sm font-bold shrink-0">
                           {comment.user_name.charAt(0)}
                         </div>
                         <div className="flex-1">
                           <div className="flex items-center gap-2 mb-1">
-                            <span className="font-medium text-sm text-[var(--color-text)]">
+                            <span className="font-medium text-sm text-(--color-text)">
                               {comment.user_name}
                             </span>
-                            <span className="text-xs text-[var(--color-text-muted)]">
+                            <span className="text-xs text-(--color-text-muted)">
                               {formatRelativeTime(comment.created_at)}
                             </span>
                           </div>
-                          <p className="text-sm text-[var(--color-text-secondary)]">
+                          <p className="text-sm text-(--color-text-secondary)">
                             {comment.comment_text}
                           </p>
                         </div>
                         <button
                           onClick={() => handleDeleteComment(selectedPost._id, comment.comment_id)}
-                          className="text-[var(--color-text-muted)] hover:text-[var(--color-error)] transition-colors shrink-0"
+                          className="text-(--color-text-muted) hover:text-(--color-error) transition-colors shrink-0"
                           title="Delete comment"
                         >
                           <Trash2 className="w-4 h-4" />
@@ -405,16 +405,16 @@ export default function ForumPage() {
 
               {/* No Comments State */}
               {(!selectedPost.comments || selectedPost.comments.length === 0) && (
-                <div className="pt-4 border-t border-[var(--color-border)] text-center py-6">
-                  <MessageCircle className="w-8 h-8 mx-auto mb-2 text-[var(--color-text-muted)]" />
-                  <p className="text-sm text-[var(--color-text-muted)]">
+                <div className="pt-4 border-t border-(--color-border) text-center py-6">
+                  <MessageCircle className="w-8 h-8 mx-auto mb-2 text-(--color-text-muted)" />
+                  <p className="text-sm text-(--color-text-muted)">
                     No comments yet. Be the first to comment!
                   </p>
                 </div>
               )}
 
               {/* Reply/Comment Input */}
-              <div className="pt-4 border-t border-[var(--color-border)]">
+              <div className="pt-4 border-t border-(--color-border)">
                 <div className="flex gap-2">
                   <Textarea
                     placeholder="Write a comment..."
