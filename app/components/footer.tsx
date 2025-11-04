@@ -1,5 +1,7 @@
 "use client"
 
+import Image from 'next/image';
+
 const footerLinks = {
   product: [
     { label: "Features", href: "#features" },
@@ -38,9 +40,7 @@ export default function Footer() {
           {/* Brand Section */}
           <div style={{ gridColumn: 'span 1' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-1)', marginBottom: 'var(--space-3)' }}>
-              <div style={{ width: '2rem', height: '2rem', backgroundColor: 'var(--color-primary)', borderRadius: 'var(--radius-md)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <span style={{ color: '#ffffff', fontWeight: 700, fontSize: '0.875rem' }}>AR</span>
-              </div>
+              <Image src="/logo.png" alt="AgriRate" width={32} height={32} />
               <span style={{ fontWeight: 700, fontSize: '1.125rem', color: 'var(--color-text)' }}>AgriRate</span>
             </div>
             <p style={{ fontSize: '0.9375rem', color: 'var(--color-text-secondary)', lineHeight: 1.6, maxWidth: '280px' }}>

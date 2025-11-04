@@ -3,12 +3,13 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { Phone, Lock } from 'lucide-react';
+import Image from 'next/image';
+import { Phone, Lock, User } from 'lucide-react';
 import ModernInput from '@/app/components/ModernInput';
 import ModernButton from '@/app/components/ModernButton';
 import { useAuth } from '@/app/lib/context/AuthContext';
 
-export default function LoginPage() {
+export default function FarmerLoginPage() {
   const router = useRouter();
   const { login } = useAuth();
   const [formData, setFormData] = useState({
@@ -40,29 +41,51 @@ export default function LoginPage() {
 
     try {
       await login(formData.phone_number, formData.password);
-      router.push('/farmer/dashboard'); // Default redirect, will be updated based on role
-    } catch (error: any) {
-      setErrors({ submit: error.message || 'Login failed' });
+      // Redirect will be handled after we check the user role
+      // Get the user from localStorage to check role
+      const savedUser = localStorage.getItem('user');
+      if (savedUser) {
+        const user = JSON.parse(savedUser);
+        if (user.role === 'farmer') {
+          router.push('/farmer/dashboard');
+        } else if (user.role === 'admin') {
+          router.push('/admin/dashboard');
+        } else {
+          router.push('/');
+        }
+      } else {
+        router.push('/farmer/dashboard');
+      }
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'Login failed';
+      setErrors({ submit: errorMessage });
     } finally {
       setIsLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 bg-[var(--color-surface-alt)]">
+    <div className="min-h-screen flex items-center justify-center p-4 bg-(--color-surface-alt)">
       <div className="w-full max-w-md">
         {/* Logo/Brand */}
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-[var(--color-primary)] mb-2">
-            🌾 AgriRate
+          <Image src="/logo.png" alt="AgriRate" width={64} height={64} className="mx-auto mb-4" />
+          <h1 className="text-4xl font-bold text-(--color-primary) mb-2">
+            AgriRate
           </h1>
-          <p className="text-[var(--color-text-secondary)]">
-            Sign in to your account
+          <div className="flex items-center justify-center gap-2 mb-2">
+            <User className="w-5 h-5 text-(--color-success)" />
+            <p className="text-lg font-semibold text-(--color-text)">
+              Farmer Login
+            </p>
+          </div>
+          <p className="text-(--color-text-secondary)">
+            Sign in to access your farm dashboard
           </p>
         </div>
 
         {/* Login Form */}
-        <div className="bg-[var(--color-surface)] rounded-xl border border-[var(--color-border)] shadow-[var(--shadow-lg)] p-8">
+        <div className="bg-(--color-surface) rounded-xl border border-(--color-border) shadow-(--shadow-lg) p-8">
           <form onSubmit={handleSubmit} className="space-y-6">
             <ModernInput
               id="phone_number"
@@ -93,8 +116,8 @@ export default function LoginPage() {
             />
 
             {errors.submit && (
-              <div className="p-4 bg-[var(--color-error-light)] border border-[var(--color-error)] rounded-lg">
-                <p className="text-sm text-[var(--color-error)] font-medium">
+              <div className="p-4 bg-(--color-error-light) border border-(--color-error) rounded-lg">
+                <p className="text-sm text-(--color-error) font-medium">
                   {errors.submit}
                 </p>
               </div>
@@ -113,22 +136,34 @@ export default function LoginPage() {
           </form>
 
           <div className="mt-6 text-center">
-            <p className="text-sm text-[var(--color-text-secondary)]">
-            Don&apos;t have an account?{' '}
+            <p className="text-sm text-(--color-text-secondary)">
+              Don&apos;t have an account?{' '}
               <Link
                 href="/auth/register"
-                className="font-semibold text-[var(--color-primary)] hover:text-[var(--color-primary-hover)]"
+                className="font-semibold text-(--color-primary) hover:text-(--color-primary-hover)"
               >
                 Register here
               </Link>
             </p>
           </div>
+
+          <div className="mt-4 text-center pt-4 border-t border-(--color-border)">
+            <p className="text-sm text-(--color-text-secondary)">
+              Are you an admin?{' '}
+              <a
+                href="/admin"
+                className="font-semibold text-(--color-warning) hover:text-(--color-warning-hover)"
+              >
+                Admin Login
+              </a>
+            </p>
+          </div>
         </div>
 
         {/* Demo Credentials Info */}
-        <div className="mt-6 p-4 bg-[var(--color-info-light)] border border-[var(--color-info)] rounded-lg">
-          <p className="text-sm text-[var(--color-text-secondary)] text-center mb-2">
-            <strong>Demo Credentials:</strong>
+        <div className="mt-6 p-4 bg-(--color-info-light) border border-(--color-info) rounded-lg">
+          <p className="text-sm text-(--color-text-secondary) text-center mb-2">
+            <strong>Demo Farmer Credentials:</strong>
           </p>
           <p className="text-xs text-(--color-text-muted) text-center">
             Phone: 1234567890 | Password: password

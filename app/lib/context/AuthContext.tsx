@@ -1,16 +1,27 @@
 "use client";
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { User } from '@/app/types';
+import { User, RegisterFormData } from '@/app/types';
 import { authApi } from '@/app/lib/api/endpoints';
 
-// Dummy user for development/testing
-const DUMMY_USER: User = {
-  user_id: 'dummy-123',
+// Dummy users for development/testing
+const DUMMY_FARMER: User = {
+  user_id: 'dummy-farmer-123',
   full_name: 'Test Farmer',
   email: 'farmer@test.com',
   phone_number: '+923001234567',
   role: 'farmer',
+  is_active: true,
+  created_at: new Date().toISOString(),
+  updated_at: new Date().toISOString(),
+};
+
+const DUMMY_ADMIN: User = {
+  user_id: 'dummy-admin-456',
+  full_name: 'Admin User',
+  email: 'admin@agrirate.com',
+  phone_number: '+923009999999',
+  role: 'admin',
   is_active: true,
   created_at: new Date().toISOString(),
   updated_at: new Date().toISOString(),
@@ -21,7 +32,7 @@ interface AuthContextType {
   isAuthenticated: boolean;
   isLoading: boolean;
   login: (phone_number: string, password: string) => Promise<void>;
-  register: (data: any) => Promise<void>;
+  register: (data: RegisterFormData) => Promise<void>;
   logout: () => void;
   updateUser: (user: User) => void;
 }
@@ -56,13 +67,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const login = async (phone_number: string, password: string) => {
     try {
-      // Check for dummy credentials
+      // Check for dummy farmer credentials
       if (phone_number === '1234567890' && password === 'password') {
-        // Use dummy user for testing
-        const token = 'dummy-token-' + Date.now();
+        const token = 'dummy-farmer-token-' + Date.now();
         localStorage.setItem('auth_token', token);
-        localStorage.setItem('user', JSON.stringify(DUMMY_USER));
-        setUser(DUMMY_USER);
+        localStorage.setItem('user', JSON.stringify(DUMMY_FARMER));
+        setUser(DUMMY_FARMER);
+        return;
+      }
+
+      // Check for dummy admin credentials
+      if (phone_number === 'admin' && password === 'admin123') {
+        const token = 'dummy-admin-token-' + Date.now();
+        localStorage.setItem('auth_token', token);
+        localStorage.setItem('user', JSON.stringify(DUMMY_ADMIN));
+        setUser(DUMMY_ADMIN);
         return;
       }
 
@@ -76,12 +95,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       } else {
         throw new Error(response.message || 'Login failed');
       }
-    } catch (error: any) {
-      throw new Error(error.response?.data?.message || 'Login failed');
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'Login failed';
+      throw new Error(errorMessage);
     }
   };
 
-  const register = async (data: any) => {
+  const register = async (data: RegisterFormData) => {
     try {
       const response = await authApi.register(data);
 
@@ -93,8 +113,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       } else {
         throw new Error(response.message || 'Registration failed');
       }
-    } catch (error: any) {
-      throw new Error(error.response?.data?.message || 'Registration failed');
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'Registration failed';
+      throw new Error(errorMessage);
     }
   };
 

@@ -4,21 +4,17 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
-import { User, Phone, Mail, Lock } from 'lucide-react';
+import { Phone, Lock, Shield } from 'lucide-react';
 import ModernInput from '@/app/components/ModernInput';
 import ModernButton from '@/app/components/ModernButton';
 import { useAuth } from '@/app/lib/context/AuthContext';
 
-export default function FarmerRegisterPage() {
+export default function AdminLoginPage() {
   const router = useRouter();
-  const { register } = useAuth();
+  const { login } = useAuth();
   const [formData, setFormData] = useState({
-    full_name: '',
     phone_number: '',
-    email: '',
     password: '',
-    confirm_password: '',
-    role: 'farmer' as const,
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isLoading, setIsLoading] = useState(false);
@@ -27,21 +23,13 @@ export default function FarmerRegisterPage() {
     e.preventDefault();
     setErrors({});
 
-    // Validation
+    // Basic validation
     const newErrors: Record<string, string> = {};
-    if (!formData.full_name) {
-      newErrors.full_name = 'Full name is required';
-    }
     if (!formData.phone_number) {
       newErrors.phone_number = 'Phone number is required';
     }
     if (!formData.password) {
       newErrors.password = 'Password is required';
-    } else if (formData.password.length < 6) {
-      newErrors.password = 'Password must be at least 6 characters';
-    }
-    if (formData.password !== formData.confirm_password) {
-      newErrors.confirm_password = 'Passwords do not match';
     }
 
     if (Object.keys(newErrors).length > 0) {
@@ -52,10 +40,22 @@ export default function FarmerRegisterPage() {
     setIsLoading(true);
 
     try {
-      await register(formData);
-      router.push('/farmer/dashboard');
+      await login(formData.phone_number, formData.password);
+      // Check user role after login
+      const savedUser = localStorage.getItem('user');
+      if (savedUser) {
+        const user = JSON.parse(savedUser);
+        if (user.role === 'admin') {
+          router.push('/admin/dashboard');
+        } else {
+          setErrors({ submit: 'Access denied. Admin credentials required.' });
+          // Log out non-admin users
+          localStorage.removeItem('auth_token');
+          localStorage.removeItem('user');
+        }
+      }
     } catch (error: unknown) {
-      const errorMessage = error instanceof Error ? error.message : 'Registration failed';
+      const errorMessage = error instanceof Error ? error.message : 'Login failed';
       setErrors({ submit: errorMessage });
     } finally {
       setIsLoading(false);
@@ -71,31 +71,29 @@ export default function FarmerRegisterPage() {
           <h1 className="text-4xl font-bold text-(--color-primary) mb-2">
             AgriRate
           </h1>
+          <div className="flex items-center justify-center gap-2 mb-2">
+            <Shield className="w-5 h-5 text-(--color-warning)" />
+            <p className="text-lg font-semibold text-(--color-text)">
+              Admin Portal
+            </p>
+          </div>
           <p className="text-(--color-text-secondary)">
-            Create your farmer account
+            Authorized personnel only
           </p>
         </div>
 
-        {/* Register Form */}
-        <div className="bg-(--color-surface) rounded-xl border border-(--color-border) shadow-(--shadow-lg) p-8">
+        {/* Login Form */}
+        <div className="bg-(--color-surface) rounded-xl border-2 border-(--color-warning) shadow-(--shadow-lg) p-8">
+          <div className="mb-6 p-3 bg-(--color-warning-light) border border-(--color-warning) rounded-lg">
+            <p className="text-sm text-(--color-text) text-center font-medium">
+              🔐 Administrator Access Only
+            </p>
+          </div>
+
           <form onSubmit={handleSubmit} className="space-y-6">
             <ModernInput
-              id="full_name"
-              label="Full Name"
-              type="text"
-              placeholder="Enter your full name"
-              value={formData.full_name}
-              onChange={(e) =>
-                setFormData({ ...formData, full_name: e.target.value })
-              }
-              error={errors.full_name}
-              icon={<User className="w-5 h-5" />}
-              required
-            />
-
-            <ModernInput
               id="phone_number"
-              label="Phone Number"
+              label="Admin Phone Number"
               type="tel"
               placeholder="03XX-XXXXXXX"
               value={formData.phone_number}
@@ -108,41 +106,15 @@ export default function FarmerRegisterPage() {
             />
 
             <ModernInput
-              id="email"
-              label="Email (Optional)"
-              type="email"
-              placeholder="your@email.com"
-              value={formData.email}
-              onChange={(e) =>
-                setFormData({ ...formData, email: e.target.value })
-              }
-              icon={<Mail className="w-5 h-5" />}
-            />
-
-            <ModernInput
               id="password"
-              label="Password"
+              label="Admin Password"
               type="password"
-              placeholder="At least 6 characters"
+              placeholder="Enter your password"
               value={formData.password}
               onChange={(e) =>
                 setFormData({ ...formData, password: e.target.value })
               }
               error={errors.password}
-              icon={<Lock className="w-5 h-5" />}
-              required
-            />
-
-            <ModernInput
-              id="confirm_password"
-              label="Confirm Password"
-              type="password"
-              placeholder="Re-enter your password"
-              value={formData.confirm_password}
-              onChange={(e) =>
-                setFormData({ ...formData, confirm_password: e.target.value })
-              }
-              error={errors.confirm_password}
               icon={<Lock className="w-5 h-5" />}
               required
             />
@@ -163,21 +135,37 @@ export default function FarmerRegisterPage() {
               loading={isLoading}
               disabled={isLoading}
             >
-              {isLoading ? 'Creating account...' : 'Create Farmer Account'}
+              {isLoading ? 'Verifying...' : 'Sign In as Admin'}
             </ModernButton>
           </form>
 
-          <div className="mt-6 text-center">
+          <div className="mt-6 text-center pt-4 border-t border-(--color-border)">
             <p className="text-sm text-(--color-text-secondary)">
-              Already have an account?{' '}
+              Not an admin?{' '}
               <Link
-                href="/auth/login"
+                href="/"
                 className="font-semibold text-(--color-primary) hover:text-(--color-primary-hover)"
               >
-                Sign in
+                Go to Homepage
               </Link>
             </p>
           </div>
+        </div>
+
+        {/* Security Notice */}
+        <div className="mt-6 p-4 bg-(--color-warning-light) border border-(--color-warning) rounded-lg">
+          <p className="text-sm text-(--color-text-secondary) text-center mb-2">
+            <strong>Demo Admin Credentials:</strong>
+          </p>
+          <p className="text-xs text-(--color-text-muted) text-center">
+            Phone: admin | Password: admin123
+          </p>
+        </div>
+
+        <div className="mt-4 p-4 bg-(--color-error-light) border border-(--color-error) rounded-lg">
+          <p className="text-sm text-(--color-text-secondary) text-center">
+            ⚠️ Unauthorized access attempts will be logged and reported
+          </p>
         </div>
       </div>
     </div>

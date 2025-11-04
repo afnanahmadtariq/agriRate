@@ -16,8 +16,21 @@ export default function MarketRatesPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [selectedRegion, setSelectedRegion] = useState('all');
+  const [selectedMarket, setSelectedMarket] = useState('all');
   const [selectedCrop, setSelectedCrop] = useState<any>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  // Market data by region
+  const marketsByRegion: Record<string, string[]> = {
+    Multan: ['Multan Mandi', 'Shah Rukn-e-Alam Market', 'Vehari Road Market', 'New Multan'],
+    Lahore: ['Badami Bagh', 'Azam Cloth Market', 'Shahdara Market', 'Model Town Market'],
+    Karachi: ['Sabzi Mandi', 'Empress Market', 'Saddar Market', 'SITE Market'],
+    Faisalabad: ['Jhang Bazar', 'Rail Bazar', 'Aminpur Bazar', 'D-Ground Market'],
+    Islamabad: ['Sabzi Mandi', 'F-6 Market', 'I-8 Market', 'F-10 Market'],
+    Rawalpindi: ['Raja Bazar', 'Moti Bazar', 'Committee Chowk', 'Saddar Bazar'],
+    Peshawar: ['Qissa Khwani Bazar', 'Saddar Bazar', 'Hashtnagri Market', 'Charsadda Road'],
+    Quetta: ['Sariab Road Market', 'Kandahari Bazar', 'Joint Road Market', 'Brewery Road'],
+  };
 
   // Mock data
   const mockRates = [
@@ -26,6 +39,7 @@ export default function MarketRatesPage() {
       crop_name: 'Wheat',
       category: 'Grain',
       region: 'Multan',
+      market: 'Multan Mandi',
       avg_price: 2850,
       min_price: 2750,
       max_price: 2950,
@@ -37,6 +51,7 @@ export default function MarketRatesPage() {
       crop_name: 'Rice',
       category: 'Grain',
       region: 'Lahore',
+      market: 'Badami Bagh',
       avg_price: 3200,
       min_price: 3100,
       max_price: 3300,
@@ -48,6 +63,7 @@ export default function MarketRatesPage() {
       crop_name: 'Tomato',
       category: 'Vegetable',
       region: 'Karachi',
+      market: 'Sabzi Mandi',
       avg_price: 85,
       min_price: 70,
       max_price: 100,
@@ -59,6 +75,7 @@ export default function MarketRatesPage() {
       crop_name: 'Cotton',
       category: 'Grain',
       region: 'Faisalabad',
+      market: 'Jhang Bazar',
       avg_price: 8500,
       min_price: 8300,
       max_price: 8700,
@@ -70,6 +87,7 @@ export default function MarketRatesPage() {
       crop_name: 'Mango',
       category: 'Fruit',
       region: 'Multan',
+      market: 'Shah Rukn-e-Alam Market',
       avg_price: 120,
       min_price: 100,
       max_price: 140,
@@ -81,11 +99,24 @@ export default function MarketRatesPage() {
       crop_name: 'Potato',
       category: 'Vegetable',
       region: 'Lahore',
+      market: 'Shahdara Market',
       avg_price: 45,
       min_price: 40,
       max_price: 50,
       date: '2025-11-04',
       change: -1.5,
+    },
+    {
+      rate_id: 7,
+      crop_name: 'Wheat',
+      category: 'Grain',
+      region: 'Lahore',
+      market: 'Model Town Market',
+      avg_price: 2900,
+      min_price: 2800,
+      max_price: 3000,
+      date: '2025-11-04',
+      change: 4.8,
     },
   ];
 
@@ -107,7 +138,9 @@ export default function MarketRatesPage() {
       selectedCategory === 'all' || rate.category === selectedCategory;
     const matchesRegion =
       selectedRegion === 'all' || rate.region === selectedRegion;
-    return matchesSearch && matchesCategory && matchesRegion;
+    const matchesMarket =
+      selectedMarket === 'all' || rate.market === selectedMarket;
+    return matchesSearch && matchesCategory && matchesRegion && matchesMarket;
   });
 
   const handleViewTrend = (crop: any) => {
@@ -131,7 +164,7 @@ export default function MarketRatesPage() {
 
           {/* Filters */}
           <ModernCard>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
               <ModernInput
                 label=""
                 placeholder="Search crops..."
@@ -153,27 +186,51 @@ export default function MarketRatesPage() {
               <Select
                 label=""
                 value={selectedRegion}
-                onChange={(e) => setSelectedRegion(e.target.value)}
+                onChange={(e) => {
+                  setSelectedRegion(e.target.value);
+                  setSelectedMarket('all'); // Reset market when region changes
+                }}
                 options={[
                   { value: 'all', label: 'All Regions' },
                   { value: 'Multan', label: 'Multan' },
                   { value: 'Lahore', label: 'Lahore' },
                   { value: 'Karachi', label: 'Karachi' },
                   { value: 'Faisalabad', label: 'Faisalabad' },
+                  { value: 'Islamabad', label: 'Islamabad' },
+                  { value: 'Rawalpindi', label: 'Rawalpindi' },
+                  { value: 'Peshawar', label: 'Peshawar' },
+                  { value: 'Quetta', label: 'Quetta' },
                 ]}
               />
+              {selectedRegion !== 'all' && (
+                <Select
+                  label=""
+                  value={selectedMarket}
+                  onChange={(e) => setSelectedMarket(e.target.value)}
+                  options={[
+                    { value: 'all', label: 'All Markets' },
+                    ...(marketsByRegion[selectedRegion] || []).map((market) => ({
+                      value: market,
+                      label: market,
+                    })),
+                  ]}
+                />
+              )}
             </div>
           </ModernCard>
 
           {/* Market Rates Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredRates.map((rate) => (
-              <ModernCard
+              <button
                 key={rate.rate_id}
-                hoverable
-                className="cursor-pointer"
                 onClick={() => handleViewTrend(rate)}
+                className="text-left w-full"
               >
+                <ModernCard
+                  hoverable
+                  className="cursor-pointer h-full"
+                >
                 <div className="flex items-start justify-between mb-3">
                   <div>
                     <h3 className="text-xl font-bold text-[var(--color-text)]">
@@ -182,6 +239,11 @@ export default function MarketRatesPage() {
                     <p className="text-sm text-[var(--color-text-muted)]">
                       {rate.region}
                     </p>
+                    {rate.market && (
+                      <p className="text-xs text-[var(--color-text-muted)] mt-0.5">
+                        📍 {rate.market}
+                      </p>
+                    )}
                   </div>
                   <Badge
                     variant={rate.change >= 0 ? 'success' : 'error'}
@@ -222,6 +284,7 @@ export default function MarketRatesPage() {
                   </div>
                 </div>
               </ModernCard>
+              </button>
             ))}
           </div>
 

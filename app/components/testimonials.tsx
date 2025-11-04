@@ -62,7 +62,7 @@ export default function Testimonials() {
               </div>
               
               <blockquote style={{ fontSize: '1.0625rem', color: 'var(--color-text)', lineHeight: 1.7, fontStyle: 'normal', margin: 0, flex: 1 }}>
-                "{testimonial.content}"
+                &ldquo;{testimonial.content}&rdquo;
               </blockquote>
               
               <footer style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-1)', paddingTop: 'var(--space-3)', borderTop: '1px solid var(--color-border-subtle)' }}>

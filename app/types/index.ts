@@ -34,6 +34,7 @@ export interface MarketRate {
   crop_name: string;
   category: 'Fruit' | 'Vegetable' | 'Grain';
   region: string;
+  market?: string; // Specific market within the region
   date: string;
   min_price: number;
   max_price: number;
@@ -42,6 +43,12 @@ export interface MarketRate {
   created_by: string;
   created_at: string;
   updated_at: string;
+}
+
+// Market locations by region
+export interface Market {
+  name: string;
+  region: string;
 }
 
 export interface MarketRateTrend {

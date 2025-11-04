@@ -128,8 +128,10 @@ export default function SmartAdvicePage() {
                     loading={isGenerating}
                     disabled={isGenerating}
                   >
-                    <Brain className="w-5 h-5" />
-                    Generate Advice
+                    <div className="flex items-center gap-2">
+                      <Brain className="w-5 h-5" />
+                      <span>Generate Advice</span>
+                    </div>
                   </ModernButton>
                 </div>
               </div>
@@ -152,10 +154,12 @@ export default function SmartAdvicePage() {
                     size="md"
                     onClick={handleVoiceInput}
                   >
-                    <Mic
-                      className={`w-5 h-5 ${isVoiceActive ? 'animate-pulse' : ''}`}
-                    />
-                    {isVoiceActive ? 'Stop Listening' : 'Start Voice Input'}
+                    <div className="flex items-center gap-2">
+                      <Mic
+                        className={`w-5 h-5 ${isVoiceActive ? 'animate-pulse' : ''}`}
+                      />
+                      <span>{isVoiceActive ? 'Stop Listening' : 'Start Voice Input'}</span>
+                    </div>
                   </ModernButton>
                 </div>
               </div>
@@ -176,12 +180,9 @@ export default function SmartAdvicePage() {
                 <ModernCard
                   key={advice.advice_id}
                   hoverable
-                  className="border-l-4"
-                  style={{
-                    borderLeftColor: `var(--color-${getContextColor(
-                      advice.context_type
-                    )})`,
-                  }}
+                  className={`border-l-4 border-l-[var(--color-${getContextColor(
+                    advice.context_type
+                  )})]`}
                 >
                   <div className="flex items-start gap-4">
                     {/* Icon */}
@@ -206,7 +207,7 @@ export default function SmartAdvicePage() {
                           <Badge
                             variant={getContextColor(
                               advice.context_type
-                            ) as any}
+                            )}
                             size="sm"
                           >
                             {advice.context_type.replace('_', ' ')}

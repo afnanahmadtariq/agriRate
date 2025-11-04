@@ -76,11 +76,11 @@ export default function FarmerDashboard() {
           <div className="space-y-8">
             {/* Welcome Header */}
             <div>
-              <h1 className="text-3xl font-bold text-[var(--color-text)] mb-2">
+              <h1 className="text-3xl font-bold text-(--color-text) mb-2">
                 Welcome back, Farmer!
               </h1>
-              <p className="text-[var(--color-text-secondary)]">
-                Here's what's happening with your farm today
+              <p className="text-(--color-text-secondary)">
+                Here&apos;s what&apos;s happening with your farm today
               </p>
             </div>
 
@@ -90,24 +90,24 @@ export default function FarmerDashboard() {
                 title="Avg Crop Price"
                 value={formatCurrency(stats.avgPrice)}
                 change={stats.priceChange}
-                icon={<DollarSign className="w-6 h-6 text-[var(--color-primary)]" />}
+                icon={<DollarSign className="w-6 h-6 text-(--color-primary)" />}
                 variant="success"
               />
               <StatsCard
                 title="Price Trend"
                 value={`+${stats.priceChange}%`}
-                icon={<TrendingUp className="w-6 h-6 text-[var(--color-success)]" />}
+                icon={<TrendingUp className="w-6 h-6 text-(--color-success)" />}
                 variant="info"
               />
               <StatsCard
                 title="Temperature"
                 value={`${stats.weatherTemp}°C`}
-                icon={<Cloud className="w-6 h-6 text-[var(--color-info)]" />}
+                icon={<Cloud className="w-6 h-6 text-(--color-info)" />}
               />
               <StatsCard
                 title="AI Insights"
                 value={stats.adviceCount}
-                icon={<Lightbulb className="w-6 h-6 text-[var(--color-warning)]" />}
+                icon={<Lightbulb className="w-6 h-6 text-(--color-warning)" />}
               />
             </div>
 
@@ -123,20 +123,20 @@ export default function FarmerDashboard() {
 
               {/* Top Crops */}
               <ModernCard>
-                <h3 className="text-lg font-semibold text-[var(--color-text)] mb-4">
-                  Today's Top Crops
+                <h3 className="text-lg font-semibold text-(--color-text) mb-4">
+                  Today&apos;s Top Crops
                 </h3>
                 <div className="space-y-3">
                   {mockTopCrops.map((item) => (
                     <div
                       key={item.crop}
-                      className="flex items-center justify-between p-3 rounded-lg bg-[var(--color-surface-alt)]"
+                      className="flex items-center justify-between p-3 rounded-lg bg-(--color-surface-alt)"
                     >
                       <div>
-                        <p className="font-semibold text-[var(--color-text)]">
+                        <p className="font-semibold text-(--color-text)">
                           {item.crop}
                         </p>
-                        <p className="text-sm text-[var(--color-text-muted)]">
+                        <p className="text-sm text-(--color-text-muted)">
                           {formatCurrency(item.price)}
                         </p>
                       </div>
@@ -156,8 +156,8 @@ export default function FarmerDashboard() {
             {/* AI Smart Advice */}
             <ModernCard>
               <div className="flex items-center gap-2 mb-4">
-                <Lightbulb className="w-6 h-6 text-[var(--color-warning)]" />
-                <h3 className="text-lg font-semibold text-[var(--color-text)]">
+                <Lightbulb className="w-6 h-6 text-(--color-warning)" />
+                <h3 className="text-lg font-semibold text-(--color-text)">
                   Smart Advice for You
                 </h3>
               </div>
@@ -165,7 +165,7 @@ export default function FarmerDashboard() {
                 {mockAdvice.map((advice) => (
                   <div
                     key={advice.id}
-                    className="p-4 rounded-lg border-2 border-[var(--color-border)] hover:border-[var(--color-primary)] transition-colors"
+                    className="p-4 rounded-lg border-2 border-(--color-border) hover:border-(--color-primary) transition-colors"
                   >
                     <div className="flex items-start justify-between mb-2">
                       <Badge
@@ -174,11 +174,11 @@ export default function FarmerDashboard() {
                       >
                         {advice.type}
                       </Badge>
-                      <span className="text-xs text-[var(--color-text-muted)]">
+                      <span className="text-xs text-(--color-text-muted)">
                         {Math.round(advice.confidence * 100)}% confidence
                       </span>
                     </div>
-                    <p className="text-sm text-[var(--color-text-secondary)]">
+                    <p className="text-sm text-(--color-text-secondary)">
                       {advice.text}
                     </p>
                   </div>
@@ -188,24 +188,24 @@ export default function FarmerDashboard() {
 
             {/* Quick Actions */}
             <ModernCard>
-              <h3 className="text-lg font-semibold text-[var(--color-text)] mb-4">
+              <h3 className="text-lg font-semibold text-(--color-text) mb-4">
                 Quick Actions
               </h3>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <button className="p-4 rounded-lg border-2 border-[var(--color-border)] hover:border-[var(--color-primary)] hover:bg-[var(--color-hover-overlay)] transition-all text-center">
-                  <TrendingUp className="w-6 h-6 mx-auto mb-2 text-[var(--color-primary)]" />
+                <button className="p-4 rounded-lg border-2 border-(--color-border) hover:border-(--color-primary) hover:bg-(--color-hover-overlay) transition-all text-center">
+                  <TrendingUp className="w-6 h-6 mx-auto mb-2 text-(--color-primary)" />
                   <p className="text-sm font-medium">View Rates</p>
                 </button>
-                <button className="p-4 rounded-lg border-2 border-[var(--color-border)] hover:border-[var(--color-primary)] hover:bg-[var(--color-hover-overlay)] transition-all text-center">
-                  <Cloud className="w-6 h-6 mx-auto mb-2 text-[var(--color-info)]" />
+                <button className="p-4 rounded-lg border-2 border-(--color-border) hover:border-(--color-primary) hover:bg-(--color-hover-overlay) transition-all text-center">
+                  <Cloud className="w-6 h-6 mx-auto mb-2 text-(--color-info)" />
                   <p className="text-sm font-medium">Weather</p>
                 </button>
-                <button className="p-4 rounded-lg border-2 border-[var(--color-border)] hover:border-[var(--color-primary)] hover:bg-[var(--color-hover-overlay)] transition-all text-center">
-                  <Lightbulb className="w-6 h-6 mx-auto mb-2 text-[var(--color-warning)]" />
+                <button className="p-4 rounded-lg border-2 border-(--color-border) hover:border-(--color-primary) hover:bg-(--color-hover-overlay) transition-all text-center">
+                  <Lightbulb className="w-6 h-6 mx-auto mb-2 text-(--color-warning)" />
                   <p className="text-sm font-medium">Get Advice</p>
                 </button>
-                <button className="p-4 rounded-lg border-2 border-[var(--color-border)] hover:border-[var(--color-primary)] hover:bg-[var(--color-hover-overlay)] transition-all text-center">
-                  <TrendingUp className="w-6 h-6 mx-auto mb-2 text-[var(--color-success)]" />
+                <button className="p-4 rounded-lg border-2 border-(--color-border) hover:border-(--color-primary) hover:bg-(--color-hover-overlay) transition-all text-center">
+                  <TrendingUp className="w-6 h-6 mx-auto mb-2 text-(--color-success)" />
                   <p className="text-sm font-medium">Forum</p>
                 </button>
               </div>

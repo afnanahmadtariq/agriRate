@@ -2,6 +2,7 @@
 
 import { Sun, Moon, Menu, X } from "lucide-react"
 import { useState } from "react"
+import Image from "next/image"
 
 interface NavbarProps {
   isDark: boolean
@@ -16,9 +17,7 @@ export default function Navbar({ isDark, toggleTheme }: NavbarProps) {
       <div style={{ maxWidth: '80rem', margin: '0 auto', padding: '0 var(--space-3)' }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: '4rem' }}>
           <a href="#" style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-1)', textDecoration: 'none' }}>
-            <div style={{ width: '2rem', height: '2rem', backgroundColor: 'var(--color-primary)', borderRadius: 'var(--radius-md)', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 2px 8px rgba(1, 65, 28, 0.2)' }}>
-              <span style={{ color: '#ffffff', fontWeight: 700, fontSize: '0.875rem' }}>AR</span>
-            </div>
+            <Image src="/logo.png" alt="AgriRate" width={32} height={32} />
             <span style={{ fontWeight: 700, fontSize: '1.125rem', color: 'var(--color-text)' }}>AgriRate</span>
           </a>
 
@@ -75,9 +74,9 @@ export default function Navbar({ isDark, toggleTheme }: NavbarProps) {
             >
               Testimonials
             </a>
-            <button className="btn btn-primary" style={{ width: '100%', marginTop: 'var(--space-2)' }}>
+            <a href="/auth/register" className="btn btn-primary" style={{ width: '100%', marginTop: 'var(--space-2)', textDecoration: 'none', textAlign: 'center' }}>
               Get Started
-            </button>
+            </a>
           </div>
         )}
       </div>
