@@ -123,26 +123,16 @@ export default function BaithakPage() {
   return (
     <ProtectedRoute allowedRoles={['farmer', 'admin', 'expert']}>
       <DashboardLayout role={user?.role === 'admin' ? 'admin' : 'farmer'}>
-        <div className="space-y-6">
-          {/* Header */}
-          <div>
-            <h1 className="text-3xl font-bold text-(--color-text) mb-2">
-              Live Baithak (Chat Rooms)
-            </h1>
-            <p className="text-(--color-text-secondary)">
-              Connect with farmers in real-time discussions
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+        <div className="h-[calc(100vh-120px)] flex flex-col">
+          <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 h-full overflow-hidden">
             {/* Rooms List */}
-            <div className="lg:col-span-1">
-              <ModernCard>
-                <h3 className="text-lg font-semibold text-(--color-text) mb-4 flex items-center gap-2">
+            <div className="lg:col-span-1 h-full overflow-hidden">
+              <ModernCard className="h-full flex flex-col">
+                <h3 className="text-lg font-semibold text-(--color-text) mb-4 flex items-center gap-2 flex-shrink-0">
                   <Users className="w-5 h-5" />
                   Active Rooms
                 </h3>
-                <div className="space-y-2">
+                <div className="space-y-2 overflow-y-auto flex-1">
                   {mockRooms.map((room) => (
                     <button
                       key={room.room_id}
@@ -154,7 +144,11 @@ export default function BaithakPage() {
                       }`}
                     >
                       <div className="flex items-center justify-between mb-1">
-                        <p className="font-semibold text-sm">{room.room_name}</p>
+                        <p className={`font-semibold text-sm ${
+                          selectedRoom === room.room_id
+                            ? 'text-white'
+                            : 'text-(--color-text)'
+                        }`}>{room.room_name}</p>
                         <Badge
                           variant={
                             selectedRoom === room.room_id ? 'success' : 'neutral'
@@ -167,7 +161,7 @@ export default function BaithakPage() {
                       <p
                         className={`text-xs ${
                           selectedRoom === room.room_id
-                            ? 'text-white/80'
+                            ? 'text-white'
                             : 'text-(--color-text-muted)'
                         }`}
                       >
@@ -180,8 +174,8 @@ export default function BaithakPage() {
             </div>
 
             {/* Chat Area */}
-            <div className="lg:col-span-3">
-              <ModernCard className="h-[600px] flex flex-col">
+            <div className="lg:col-span-3 h-full overflow-hidden">
+              <ModernCard className="h-full flex flex-col">
                 {/* Chat Header */}
                 <div className="flex items-center justify-between pb-4 border-b border-(--color-border)">
                   <div>
@@ -277,15 +271,15 @@ export default function BaithakPage() {
                     Press Enter to send, Shift + Enter for new line
                   </p>
                 </div>
-              </ModernCard>
 
-              {/* Connection Status (Socket.io indicator) */}
-              <div className="mt-4 flex items-center gap-2 text-sm">
-                <div className="w-2 h-2 rounded-full bg-(--color-success) animate-pulse"></div>
-                <span className="text-(--color-text-muted)">
-                  Connected to real-time chat (Demo Mode)
-                </span>
-              </div>
+                {/* Connection Status (Socket.io indicator) */}
+                <div className="mt-2 pt-2 border-t border-(--color-border) flex items-center gap-2 text-sm shrink-0">
+                  <div className="w-2 h-2 rounded-full bg-(--color-success) animate-pulse"></div>
+                  <span className="text-(--color-text-muted) text-xs">
+                    Connected (Demo Mode)
+                  </span>
+                </div>
+              </ModernCard>
             </div>
           </div>
         </div>
