@@ -225,11 +225,13 @@ export default function BaithakPage() {
                                 : 'bg-(--color-surface-alt) text-(--color-text)'
                             }`}
                           >
-                            <p className="text-sm">{msg.message_text}</p>
+                            <p className={`text-sm ${
+                              isOwnMessage ? 'text-white' : ''
+                            }`}>{msg.message_text}</p>
                             <p
                               className={`text-xs mt-1 ${
                                 isOwnMessage
-                                  ? 'text-white/70'
+                                  ? 'text-white'
                                   : 'text-(--color-text-muted)'
                               }`}
                             >
