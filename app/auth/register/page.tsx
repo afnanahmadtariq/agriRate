@@ -54,8 +54,9 @@ export default function RegisterPage() {
     try {
       await register(formData);
       router.push('/farmer/dashboard'); // Default redirect based on role
-    } catch (error: any) {
-      setErrors({ submit: error.message || 'Registration failed' });
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'Registration failed';
+      setErrors({ submit: errorMessage });
     } finally {
       setIsLoading(false);
     }

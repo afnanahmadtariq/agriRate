@@ -1,7 +1,7 @@
 "use client";
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { User } from '@/app/types';
+import { User, RegisterFormData } from '@/app/types';
 import { authApi } from '@/app/lib/api/endpoints';
 
 // Dummy user for development/testing
@@ -21,7 +21,7 @@ interface AuthContextType {
   isAuthenticated: boolean;
   isLoading: boolean;
   login: (phone_number: string, password: string) => Promise<void>;
-  register: (data: any) => Promise<void>;
+  register: (data: RegisterFormData) => Promise<void>;
   logout: () => void;
   updateUser: (user: User) => void;
 }
@@ -76,12 +76,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       } else {
         throw new Error(response.message || 'Login failed');
       }
-    } catch (error: any) {
-      throw new Error(error.response?.data?.message || 'Login failed');
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'Login failed';
+      throw new Error(errorMessage);
     }
   };
 
-  const register = async (data: any) => {
+  const register = async (data: RegisterFormData) => {
     try {
       const response = await authApi.register(data);
 
@@ -93,8 +94,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       } else {
         throw new Error(response.message || 'Registration failed');
       }
-    } catch (error: any) {
-      throw new Error(error.response?.data?.message || 'Registration failed');
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'Registration failed';
+      throw new Error(errorMessage);
     }
   };
 

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from 'react';
-import { TrendingUp, Users, FileText, MessageSquare } from 'lucide-react';
+import { TrendingUp, Users, MessageSquare } from 'lucide-react';
 import ProtectedRoute from '@/app/components/shared/ProtectedRoute';
 import DashboardLayout from '@/app/components/shared/DashboardLayout';
 import StatsCard from '@/app/components/charts/StatsCard';
@@ -11,6 +11,13 @@ import ModernButton from '@/app/components/ModernButton';
 import Table from '@/app/components/ui/Table';
 import LoadingSpinner from '@/app/components/ui/LoadingSpinner';
 import { formatCurrency, formatDateTime } from '@/app/lib/utils/format';
+
+interface RateData {
+  crop_name: string;
+  region: string;
+  avg_price: number;
+  date: string;
+}
 
 export default function AdminDashboard() {
   const [isLoading, setIsLoading] = useState(true);
@@ -66,12 +73,12 @@ export default function AdminDashboard() {
     {
       key: 'avg_price',
       header: 'Price',
-      render: (item: any) => formatCurrency(item.avg_price),
+      render: (item: RateData) => formatCurrency(item.avg_price),
     },
     {
       key: 'date',
       header: 'Date',
-      render: (item: any) => formatDateTime(item.date, 'MMM dd, yyyy'),
+      render: (item: RateData) => formatDateTime(item.date, 'MMM dd, yyyy'),
     },
   ];
 

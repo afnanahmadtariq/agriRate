@@ -52,7 +52,7 @@ export default function Pricing() {
         <header style={{ textAlign: 'center', marginBottom: 'var(--space-8)', maxWidth: '48rem', marginLeft: 'auto', marginRight: 'auto' }}>
           <h2 style={{ marginBottom: 'var(--space-3)' }}>Simple, Transparent Pricing</h2>
           <p style={{ fontSize: '1.125rem', color: 'var(--color-text-secondary)', lineHeight: 1.7 }}>
-            Choose the plan that fits your farm's needs. Scale anytime.
+            Choose the plan that fits your farm&apos;s needs. Scale anytime.
           </p>
         </header>
 
