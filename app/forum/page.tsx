@@ -19,6 +19,7 @@ export default function ForumPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [selectedPost, setSelectedPost] = useState<typeof mockPosts[0] | null>(null);
   const [newPost, setNewPost] = useState({
     title: '',
     body: '',
@@ -164,8 +165,13 @@ export default function ForumPage() {
           {/* Posts List */}
           <div className="space-y-4">
             {filteredPosts.map((post) => (
-              <ModernCard key={post._id} hoverable className="cursor-pointer">
-                <div className="flex items-start gap-4">
+              <div 
+                key={post._id}
+                onClick={() => setSelectedPost(post)}
+                className="cursor-pointer"
+              >
+                <ModernCard hoverable>
+                  <div className="flex items-start gap-4">
                   {/* User Avatar */}
                   <div className="w-12 h-12 rounded-full bg-[var(--color-primary)] flex items-center justify-center text-white font-bold flex-shrink-0">
                     {post.user_name.charAt(0)}
@@ -210,7 +216,8 @@ export default function ForumPage() {
                     </div>
                   </div>
                 </div>
-              </ModernCard>
+                </ModernCard>
+              </div>
             ))}
           </div>
 
@@ -239,6 +246,124 @@ export default function ForumPage() {
             </ModernCard>
           )}
         </div>
+
+        {/* Post Detail Modal */}
+        <Modal
+          isOpen={selectedPost !== null}
+          onClose={() => setSelectedPost(null)}
+          title={selectedPost?.title || 'Post Details'}
+          size="lg"
+        >
+          {selectedPost && (
+            <div className="space-y-4">
+              {/* Post Header */}
+              <div className="pb-4 border-b border-[var(--color-border)]">
+                <div className="flex items-start gap-3 mb-4">
+                  <div className="w-10 h-10 rounded-full bg-[var(--color-primary)] flex items-center justify-center text-white font-bold shrink-0">
+                    {selectedPost.user_name.charAt(0)}
+                  </div>
+                  <div className="flex-1">
+                    <p className="font-medium text-[var(--color-text)]">
+                      {selectedPost.user_name}
+                    </p>
+                    <p className="text-sm text-[var(--color-text-muted)]">
+                      {formatRelativeTime(selectedPost.created_at)}
+                    </p>
+                  </div>
+                  <Badge variant="info" size="sm">
+                    {selectedPost.category}
+                  </Badge>
+                </div>
+              </div>
+
+              {/* Post Body */}
+              <div>
+                <p className="text-[var(--color-text)] whitespace-pre-wrap">
+                  {selectedPost.body}
+                </p>
+              </div>
+
+              {/* Post Stats */}
+              <div className="flex items-center gap-6 pt-4 border-t border-[var(--color-border)] text-sm text-[var(--color-text-muted)]">
+                <button className="flex items-center gap-2 hover:text-[var(--color-primary)] transition-colors">
+                  <Heart className="w-4 h-4" />
+                  <span>{selectedPost.likes}</span>
+                </button>
+                <button className="flex items-center gap-2 hover:text-[var(--color-primary)] transition-colors">
+                  <MessageCircle className="w-4 h-4" />
+                  <span>{selectedPost.comments?.length || 0} Comments</span>
+                </button>
+              </div>
+
+              {/* Comments Section */}
+              {selectedPost.comments && selectedPost.comments.length > 0 && (
+                <div className="pt-4 border-t border-[var(--color-border)]">
+                  <h4 className="font-semibold text-[var(--color-text)] mb-4">
+                    Comments ({selectedPost.comments.length})
+                  </h4>
+                  <div className="space-y-3">
+                    {selectedPost.comments.map((comment) => (
+                      <div key={comment.comment_id} className="flex gap-3 p-3 bg-[var(--color-bg-secondary)] rounded-lg">
+                        <div className="w-8 h-8 rounded-full bg-[var(--color-primary)] flex items-center justify-center text-white text-sm font-bold shrink-0">
+                          {comment.user_name.charAt(0)}
+                        </div>
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2 mb-1">
+                            <span className="font-medium text-sm text-[var(--color-text)]">
+                              {comment.user_name}
+                            </span>
+                            <span className="text-xs text-[var(--color-text-muted)]">
+                              {formatRelativeTime(comment.created_at)}
+                            </span>
+                          </div>
+                          <p className="text-sm text-[var(--color-text-secondary)]">
+                            {comment.comment_text}
+                          </p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* No Comments State */}
+              {(!selectedPost.comments || selectedPost.comments.length === 0) && (
+                <div className="pt-4 border-t border-[var(--color-border)] text-center py-6">
+                  <MessageCircle className="w-8 h-8 mx-auto mb-2 text-[var(--color-text-muted)]" />
+                  <p className="text-sm text-[var(--color-text-muted)]">
+                    No comments yet. Be the first to comment!
+                  </p>
+                </div>
+              )}
+
+              {/* Reply/Comment Input */}
+              <div className="pt-4 border-t border-[var(--color-border)]">
+                <div className="flex gap-2">
+                  <Textarea
+                    placeholder="Write a comment..."
+                    rows={3}
+                    className="flex-1"
+                  />
+                </div>
+                <div className="flex gap-2 justify-end mt-2">
+                  <ModernButton
+                    variant="secondary"
+                    size="sm"
+                    onClick={() => setSelectedPost(null)}
+                  >
+                    Close
+                  </ModernButton>
+                  <ModernButton
+                    variant="primary"
+                    size="sm"
+                  >
+                    Post Comment
+                  </ModernButton>
+                </div>
+              </div>
+            </div>
+          )}
+        </Modal>
 
         {/* Create Post Modal */}
         <Modal
