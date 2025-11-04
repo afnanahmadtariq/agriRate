@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import Image from 'next/image';
 import { User, Phone, Mail, Lock } from 'lucide-react';
 import ModernInput from '@/app/components/ModernInput';
 import ModernButton from '@/app/components/ModernButton';
@@ -67,8 +68,9 @@ export default function RegisterPage() {
       <div className="w-full max-w-md">
         {/* Logo/Brand */}
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-[var(--color-primary)] mb-2">
-            🌾 AgriRate
+          <Image src="/logo.png" alt="AgriRate" width={64} height={64} className="mx-auto mb-4" />
+          <h1 className="text-4xl font-bold text-(--color-primary) mb-2">
+            AgriRate
           </h1>
           <p className="text-[var(--color-text-secondary)]">
             Create your account

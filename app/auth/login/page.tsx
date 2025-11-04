@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import Image from 'next/image';
 import { Phone, Lock } from 'lucide-react';
 import ModernInput from '@/app/components/ModernInput';
 import ModernButton from '@/app/components/ModernButton';
@@ -54,8 +55,9 @@ export default function LoginPage() {
       <div className="w-full max-w-md">
         {/* Logo/Brand */}
         <div className="text-center mb-8">
+          <Image src="/logo.png" alt="AgriRate" width={64} height={64} className="mx-auto mb-4" />
           <h1 className="text-4xl font-bold text-(--color-primary) mb-2">
-            🌾 AgriRate
+            AgriRate
           </h1>
           <p className="text-(--color-text-secondary)">
             Sign in to your account

@@ -3,6 +3,7 @@
 import { ReactNode, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import Image from 'next/image';
 import {
   Menu,
   X,
@@ -104,7 +105,7 @@ export default function DashboardLayout({ children, role }: DashboardLayoutProps
 
             {/* Logo */}
             <Link href="/" className="flex items-center gap-2">
-              <span className="text-2xl">🌾</span>
+              <Image src="/logo.png" alt="AgriRate" width={32} height={32} />
               <span className="font-bold text-xl text-[var(--color-primary)]">
                 AgriRate
               </span>
