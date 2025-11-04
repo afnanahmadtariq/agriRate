@@ -176,12 +176,9 @@ export default function SmartAdvicePage() {
                 <ModernCard
                   key={advice.advice_id}
                   hoverable
-                  className="border-l-4"
-                  style={{
-                    borderLeftColor: `var(--color-${getContextColor(
-                      advice.context_type
-                    )})`,
-                  }}
+                  className={`border-l-4 border-l-[var(--color-${getContextColor(
+                    advice.context_type
+                  )})]`}
                 >
                   <div className="flex items-start gap-4">
                     {/* Icon */}
@@ -206,7 +203,7 @@ export default function SmartAdvicePage() {
                           <Badge
                             variant={getContextColor(
                               advice.context_type
-                            ) as any}
+                            )}
                             size="sm"
                           >
                             {advice.context_type.replace('_', ' ')}
