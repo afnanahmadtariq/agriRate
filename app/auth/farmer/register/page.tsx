@@ -7,10 +7,9 @@ import Image from 'next/image';
 import { User, Phone, Mail, Lock } from 'lucide-react';
 import ModernInput from '@/app/components/ModernInput';
 import ModernButton from '@/app/components/ModernButton';
-import Select from '@/app/components/ui/Select';
 import { useAuth } from '@/app/lib/context/AuthContext';
 
-export default function RegisterPage() {
+export default function FarmerRegisterPage() {
   const router = useRouter();
   const { register } = useAuth();
   const [formData, setFormData] = useState({
@@ -19,7 +18,7 @@ export default function RegisterPage() {
     email: '',
     password: '',
     confirm_password: '',
-    role: 'farmer' as 'farmer' | 'admin' | 'expert',
+    role: 'farmer' as const,
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isLoading, setIsLoading] = useState(false);
@@ -54,7 +53,7 @@ export default function RegisterPage() {
 
     try {
       await register(formData);
-      router.push('/farmer/dashboard'); // Default redirect based on role
+      router.push('/farmer/dashboard');
     } catch (error: unknown) {
       const errorMessage = error instanceof Error ? error.message : 'Registration failed';
       setErrors({ submit: errorMessage });
@@ -64,7 +63,7 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 bg-[var(--color-surface-alt)]">
+    <div className="min-h-screen flex items-center justify-center p-4 bg-(--color-surface-alt)">
       <div className="w-full max-w-md">
         {/* Logo/Brand */}
         <div className="text-center mb-8">
@@ -72,13 +71,13 @@ export default function RegisterPage() {
           <h1 className="text-4xl font-bold text-(--color-primary) mb-2">
             AgriRate
           </h1>
-          <p className="text-[var(--color-text-secondary)]">
-            Create your account
+          <p className="text-(--color-text-secondary)">
+            Create your farmer account
           </p>
         </div>
 
         {/* Register Form */}
-        <div className="bg-[var(--color-surface)] rounded-xl border border-[var(--color-border)] shadow-[var(--shadow-lg)] p-8">
+        <div className="bg-(--color-surface) rounded-xl border border-(--color-border) shadow-(--shadow-lg) p-8">
           <form onSubmit={handleSubmit} className="space-y-6">
             <ModernInput
               id="full_name"
@@ -149,8 +148,8 @@ export default function RegisterPage() {
             />
 
             {errors.submit && (
-              <div className="p-4 bg-[var(--color-error-light)] border border-[var(--color-error)] rounded-lg">
-                <p className="text-sm text-[var(--color-error)] font-medium">
+              <div className="p-4 bg-(--color-error-light) border border-(--color-error) rounded-lg">
+                <p className="text-sm text-(--color-error) font-medium">
                   {errors.submit}
                 </p>
               </div>
@@ -164,16 +163,16 @@ export default function RegisterPage() {
               loading={isLoading}
               disabled={isLoading}
             >
-              {isLoading ? 'Creating account...' : 'Create Account'}
+              {isLoading ? 'Creating account...' : 'Create Farmer Account'}
             </ModernButton>
           </form>
 
           <div className="mt-6 text-center">
-            <p className="text-sm text-[var(--color-text-secondary)]">
+            <p className="text-sm text-(--color-text-secondary)">
               Already have an account?{' '}
               <Link
-                href="/auth/login"
-                className="font-semibold text-[var(--color-primary)] hover:text-[var(--color-primary-hover)]"
+                href="/auth/farmer/login"
+                className="font-semibold text-(--color-primary) hover:text-(--color-primary-hover)"
               >
                 Sign in
               </Link>

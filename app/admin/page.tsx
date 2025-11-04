@@ -4,12 +4,12 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Phone, Lock } from 'lucide-react';
+import { Phone, Lock, Shield } from 'lucide-react';
 import ModernInput from '@/app/components/ModernInput';
 import ModernButton from '@/app/components/ModernButton';
 import { useAuth } from '@/app/lib/context/AuthContext';
 
-export default function LoginPage() {
+export default function AdminLoginPage() {
   const router = useRouter();
   const { login } = useAuth();
   const [formData, setFormData] = useState({
@@ -41,7 +41,19 @@ export default function LoginPage() {
 
     try {
       await login(formData.phone_number, formData.password);
-      router.push('/farmer/dashboard'); // Default redirect, will be updated based on role
+      // Check user role after login
+      const savedUser = localStorage.getItem('user');
+      if (savedUser) {
+        const user = JSON.parse(savedUser);
+        if (user.role === 'admin') {
+          router.push('/admin/dashboard');
+        } else {
+          setErrors({ submit: 'Access denied. Admin credentials required.' });
+          // Log out non-admin users
+          localStorage.removeItem('auth_token');
+          localStorage.removeItem('user');
+        }
+      }
     } catch (error: unknown) {
       const errorMessage = error instanceof Error ? error.message : 'Login failed';
       setErrors({ submit: errorMessage });
@@ -59,17 +71,29 @@ export default function LoginPage() {
           <h1 className="text-4xl font-bold text-(--color-primary) mb-2">
             AgriRate
           </h1>
+          <div className="flex items-center justify-center gap-2 mb-2">
+            <Shield className="w-5 h-5 text-(--color-warning)" />
+            <p className="text-lg font-semibold text-(--color-text)">
+              Admin Portal
+            </p>
+          </div>
           <p className="text-(--color-text-secondary)">
-            Sign in to your account
+            Authorized personnel only
           </p>
         </div>
 
         {/* Login Form */}
-        <div className="bg-(--color-surface) rounded-xl border border-(--color-border) shadow-(--shadow-lg) p-8">
+        <div className="bg-(--color-surface) rounded-xl border-2 border-(--color-warning) shadow-(--shadow-lg) p-8">
+          <div className="mb-6 p-3 bg-(--color-warning-light) border border-(--color-warning) rounded-lg">
+            <p className="text-sm text-(--color-text) text-center font-medium">
+              🔐 Administrator Access Only
+            </p>
+          </div>
+
           <form onSubmit={handleSubmit} className="space-y-6">
             <ModernInput
               id="phone_number"
-              label="Phone Number"
+              label="Admin Phone Number"
               type="tel"
               placeholder="03XX-XXXXXXX"
               value={formData.phone_number}
@@ -83,7 +107,7 @@ export default function LoginPage() {
 
             <ModernInput
               id="password"
-              label="Password"
+              label="Admin Password"
               type="password"
               placeholder="Enter your password"
               value={formData.password}
@@ -111,30 +135,36 @@ export default function LoginPage() {
               loading={isLoading}
               disabled={isLoading}
             >
-              {isLoading ? 'Signing in...' : 'Sign In'}
+              {isLoading ? 'Verifying...' : 'Sign In as Admin'}
             </ModernButton>
           </form>
 
-          <div className="mt-6 text-center">
+          <div className="mt-6 text-center pt-4 border-t border-(--color-border)">
             <p className="text-sm text-(--color-text-secondary)">
-              Don&apos;t have an account?{' '}
+              Not an admin?{' '}
               <Link
-                href="/auth/register"
+                href="/"
                 className="font-semibold text-(--color-primary) hover:text-(--color-primary-hover)"
               >
-                Register here
+                Go to Homepage
               </Link>
             </p>
           </div>
         </div>
 
-        {/* Demo Credentials Info */}
-        <div className="mt-6 p-4 bg-(--color-info-light) border border-(--color-info) rounded-lg">
+        {/* Security Notice */}
+        <div className="mt-6 p-4 bg-(--color-warning-light) border border-(--color-warning) rounded-lg">
           <p className="text-sm text-(--color-text-secondary) text-center mb-2">
-            <strong>Demo Credentials:</strong>
+            <strong>Demo Admin Credentials:</strong>
           </p>
           <p className="text-xs text-(--color-text-muted) text-center">
-            Phone: 1234567890 | Password: password
+            Phone: admin | Password: admin123
+          </p>
+        </div>
+
+        <div className="mt-4 p-4 bg-(--color-error-light) border border-(--color-error) rounded-lg">
+          <p className="text-sm text-(--color-text-secondary) text-center">
+            ⚠️ Unauthorized access attempts will be logged and reported
           </p>
         </div>
       </div>

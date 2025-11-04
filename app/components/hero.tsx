@@ -24,12 +24,12 @@ export default function Hero() {
         </p>
         
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: 'var(--space-3)', justifyContent: 'center', paddingTop: 'var(--space-2)' }}>
-          <button className="btn btn-primary hover-lift">
+          <a href="/auth/farmer/register" className="btn btn-primary hover-lift" style={{ textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: 'var(--space-2)' }}>
             Start Free Trial <ArrowRight size={20} />
-          </button>
-          <button className="btn btn-secondary">
-            Watch Demo
-          </button>
+          </a>
+          <a href="/auth/farmer/login" className="btn btn-secondary" style={{ textDecoration: 'none' }}>
+            Sign In
+          </a>
         </div>
 
         {/* Trust Indicators */}

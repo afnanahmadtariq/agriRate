@@ -37,12 +37,12 @@ export default function CTA() {
           </div>
           
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 'var(--space-3)', justifyContent: 'center', paddingTop: 'var(--space-2)' }}>
-            <button className="btn btn-primary hover-lift" style={{ fontSize: '1rem', padding: 'var(--space-3) var(--space-6)' }}>
+            <a href="/auth/farmer/register" className="btn btn-primary hover-lift" style={{ fontSize: '1rem', padding: 'var(--space-3) var(--space-6)', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: 'var(--space-2)' }}>
               Start Your Free Trial <ArrowRight size={20} />
-            </button>
-            <button className="btn btn-secondary" style={{ fontSize: '1rem', padding: 'var(--space-3) var(--space-6)' }}>
-              Schedule a Demo
-            </button>
+            </a>
+            <a href="/auth/farmer/login" className="btn btn-secondary" style={{ fontSize: '1rem', padding: 'var(--space-3) var(--space-6)', textDecoration: 'none' }}>
+              Sign In
+            </a>
           </div>
 
           <p style={{ fontSize: '0.875rem', color: 'var(--color-text-muted)', marginTop: 'var(--space-2)' }}>
