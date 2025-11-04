@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Phone, Lock, User } from 'lucide-react';
+import { Phone, Lock, Mail } from 'lucide-react';
 import ModernInput from '@/app/components/ModernInput';
 import ModernButton from '@/app/components/ModernButton';
 import { useAuth } from '@/app/lib/context/AuthContext';
@@ -13,11 +13,28 @@ export default function FarmerLoginPage() {
   const router = useRouter();
   const { login } = useAuth();
   const [formData, setFormData] = useState({
-    phone_number: '',
+    credential: '', // Can be email or phone number
     password: '',
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isLoading, setIsLoading] = useState(false);
+  const [credentialType, setCredentialType] = useState<'email' | 'phone'>('email');
+
+  // Check if input is email or phone
+  const identifyCredentialType = (value: string): 'email' | 'phone' => {
+    if (value.includes('@')) {
+      return 'email';
+    }
+    return 'phone';
+  };
+
+  const handleCredentialChange = (value: string) => {
+    setFormData({ ...formData, credential: value });
+    // Auto-detect credential type
+    if (value) {
+      setCredentialType(identifyCredentialType(value));
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -25,9 +42,18 @@ export default function FarmerLoginPage() {
 
     // Basic validation
     const newErrors: Record<string, string> = {};
-    if (!formData.phone_number) {
-      newErrors.phone_number = 'Phone number is required';
+    if (!formData.credential) {
+      newErrors.credential = 'Email or phone number is required';
+    } else {
+      // Validate email format if it contains @
+      if (formData.credential.includes('@')) {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(formData.credential)) {
+          newErrors.credential = 'Please enter a valid email address';
+        }
+      }
     }
+
     if (!formData.password) {
       newErrors.password = 'Password is required';
     }
@@ -40,8 +66,10 @@ export default function FarmerLoginPage() {
     setIsLoading(true);
 
     try {
-      await login(formData.phone_number, formData.password);
-      // Redirect will be handled after we check the user role
+      // For login, we can use the credential as-is
+      // The backend should handle both email and phone
+      await login(formData.credential, formData.password);
+      
       // Get the user from localStorage to check role
       const savedUser = localStorage.getItem('user');
       if (savedUser) {
@@ -73,12 +101,9 @@ export default function FarmerLoginPage() {
           <h1 className="text-4xl font-bold text-(--color-primary) mb-2">
             AgriRate
           </h1>
-          <div className="flex items-center justify-center gap-2 mb-2">
-            <User className="w-5 h-5 text-(--color-success)" />
-            <p className="text-lg font-semibold text-(--color-text)">
-              Farmer Login
-            </p>
-          </div>
+          <p className="text-lg font-semibold text-(--color-text) mb-1">
+            Farmer Login
+          </p>
           <p className="text-(--color-text-secondary)">
             Sign in to access your farm dashboard
           </p>
@@ -88,16 +113,14 @@ export default function FarmerLoginPage() {
         <div className="bg-(--color-surface) rounded-xl border border-(--color-border) shadow-(--shadow-lg) p-8">
           <form onSubmit={handleSubmit} className="space-y-6">
             <ModernInput
-              id="phone_number"
-              label="Phone Number"
-              type="tel"
-              placeholder="03XX-XXXXXXX"
-              value={formData.phone_number}
-              onChange={(e) =>
-                setFormData({ ...formData, phone_number: e.target.value })
-              }
-              error={errors.phone_number}
-              icon={<Phone className="w-5 h-5" />}
+              id="credential"
+              label="Email or Phone Number"
+              type="text"
+              placeholder="Enter your email or phone number"
+              value={formData.credential}
+              onChange={(e) => handleCredentialChange(e.target.value)}
+              error={errors.credential}
+              icon={credentialType === 'email' ? <Mail className="w-5 h-5" /> : <Phone className="w-5 h-5" />}
               required
             />
 
@@ -162,12 +185,13 @@ export default function FarmerLoginPage() {
 
         {/* Demo Credentials Info */}
         <div className="mt-6 p-4 bg-(--color-info-light) border border-(--color-info) rounded-lg">
-          <p className="text-sm text-(--color-text-secondary) text-center mb-2">
+          <p className="text-sm text-(--color-text-secondary) text-center mb-3">
             <strong>Demo Farmer Credentials:</strong>
           </p>
-          <p className="text-xs text-(--color-text-muted) text-center">
-            Phone: 1234567890 | Password: password
-          </p>
+          <div className="space-y-2 text-xs text-(--color-text-muted) text-center">
+            <p>📧 Email: farmer@example.com | Password: password</p>
+            <p>📱 Phone: 03001234567 | Password: password</p>
+          </div>
         </div>
       </div>
     </div>
