@@ -4,6 +4,18 @@ import React, { createContext, useContext, useState, useEffect, ReactNode } from
 import { User } from '@/app/types';
 import { authApi } from '@/app/lib/api/endpoints';
 
+// Dummy user for development/testing
+const DUMMY_USER: User = {
+  user_id: 'dummy-123',
+  full_name: 'Test Farmer',
+  email: 'farmer@test.com',
+  phone_number: '+923001234567',
+  role: 'farmer',
+  is_active: true,
+  created_at: new Date().toISOString(),
+  updated_at: new Date().toISOString(),
+};
+
 interface AuthContextType {
   user: User | null;
   isAuthenticated: boolean;
@@ -44,6 +56,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const login = async (phone_number: string, password: string) => {
     try {
+      // Check for dummy credentials
+      if (phone_number === '1234567890' && password === 'password') {
+        // Use dummy user for testing
+        const token = 'dummy-token-' + Date.now();
+        localStorage.setItem('auth_token', token);
+        localStorage.setItem('user', JSON.stringify(DUMMY_USER));
+        setUser(DUMMY_USER);
+        return;
+      }
+
       const response = await authApi.login({ phone_number, password });
 
       if (response.success && response.data) {

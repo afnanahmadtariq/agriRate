@@ -114,7 +114,7 @@ export default function LoginPage() {
 
           <div className="mt-6 text-center">
             <p className="text-sm text-[var(--color-text-secondary)]">
-              Don't have an account?{' '}
+            Don&apos;t have an account?{' '}
               <Link
                 href="/auth/register"
                 className="font-semibold text-[var(--color-primary)] hover:text-[var(--color-primary-hover)]"
@@ -127,8 +127,11 @@ export default function LoginPage() {
 
         {/* Demo Credentials Info */}
         <div className="mt-6 p-4 bg-[var(--color-info-light)] border border-[var(--color-info)] rounded-lg">
-          <p className="text-sm text-[var(--color-text-secondary)] text-center">
-            <strong>Demo Mode:</strong> Backend API not configured yet.
+          <p className="text-sm text-[var(--color-text-secondary)] text-center mb-2">
+            <strong>Demo Credentials:</strong>
+          </p>
+          <p className="text-xs text-(--color-text-muted) text-center">
+            Phone: 1234567890 | Password: password
           </p>
         </div>
       </div>
