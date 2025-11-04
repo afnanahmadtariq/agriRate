@@ -3,7 +3,7 @@
 AgriRate is a comprehensive web application designed to empower Pakistani farmers with AI-driven market insights, real-time weather data, smart farming advice, and community collaboration tools.
 
 ## Backend Repository
-![Click to navigate](https://github.com/Danyal-Rana/WIH-Backend)
+[Click to navigate](https://github.com/Danyal-Rana/WIH-Backend)
 
 ## 🚀 Features Implemented
 
