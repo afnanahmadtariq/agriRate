@@ -17,6 +17,7 @@ import {
   Settings,
   LogOut,
   ShoppingBag,
+  BarChart3,
 } from 'lucide-react';
 import { useAuth } from '@/app/lib/context/AuthContext';
 import ModernButton from '@/app/components/ModernButton';
@@ -39,18 +40,23 @@ export default function DashboardLayout({ children, role }: DashboardLayoutProps
 
   const adminNavItems: NavItem[] = [
     { name: 'Dashboard', href: '/admin/dashboard', icon: <Home className="w-5 h-5" /> },
+    { name: 'Users', href: '/admin/users', icon: <Users className="w-5 h-5" /> },
     {
       name: 'Market Rates',
       href: '/admin/market-rates',
       icon: <TrendingUp className="w-5 h-5" />,
     },
+    { name: 'Forum', href: '/admin/forum', icon: <MessageSquare className="w-5 h-5" /> },
     {
-      name: 'Articles',
-      href: '/admin/articles',
-      icon: <Lightbulb className="w-5 h-5" />,
+      name: 'Analytics',
+      href: '/admin/analytics',
+      icon: <BarChart3 className="w-5 h-5" />,
     },
-    { name: 'Forum', href: '/forum', icon: <MessageSquare className="w-5 h-5" /> },
-    { name: 'Users', href: '/admin/users', icon: <Users className="w-5 h-5" /> },
+    {
+      name: 'Settings',
+      href: '/admin/settings',
+      icon: <Settings className="w-5 h-5" />,
+    },
   ];
 
   const farmerNavItems: NavItem[] = [

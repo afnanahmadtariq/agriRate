@@ -42,10 +42,10 @@ export default function Navbar({ isDark, toggleTheme }: NavbarProps) {
             >
               {isDark ? <Sun size={20} /> : <Moon size={20} />}
             </button>
-            <a href="/auth/farmer/login" className="btn btn-secondary" style={{ display: 'none' }} id="nav-cta">
+            <a href="/auth/login" className="btn btn-secondary" style={{ display: 'none' }} id="nav-cta">
               Sign In
             </a>
-            <a href="/auth/farmer/register" className="btn btn-primary" style={{ display: 'none', marginLeft: 'var(--space-1)' }} id="nav-cta">
+            <a href="/auth/register" className="btn btn-primary" style={{ display: 'none', marginLeft: 'var(--space-1)' }} id="nav-cta">
               Get Started
             </a>
             <button onClick={() => setMobileOpen(!mobileOpen)} style={{ padding: 'var(--space-1)' }} className="mobile-menu-btn">
@@ -74,7 +74,7 @@ export default function Navbar({ isDark, toggleTheme }: NavbarProps) {
             >
               Testimonials
             </a>
-            <a href="/auth/farmer/register" className="btn btn-primary" style={{ width: '100%', marginTop: 'var(--space-2)', textDecoration: 'none', textAlign: 'center' }}>
+            <a href="/auth/register" className="btn btn-primary" style={{ width: '100%', marginTop: 'var(--space-2)', textDecoration: 'none', textAlign: 'center' }}>
               Get Started
             </a>
           </div>

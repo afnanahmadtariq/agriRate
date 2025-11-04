@@ -124,7 +124,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     localStorage.removeItem('user');
     setUser(null);
     if (typeof window !== 'undefined') {
-      window.location.href = '/auth/farmer/login';
+      window.location.href = '/auth/login';
     }
   };
 
