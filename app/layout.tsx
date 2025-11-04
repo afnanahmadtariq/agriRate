@@ -1,36 +1,30 @@
-import type { Metadata } from "next";
-import { Inter, Noto_Nastaliq_Urdu } from "next/font/google";
-import "./globals.css";
+import type React from "react"
+import type { Metadata } from "next"
+import { Geist, Geist_Mono } from "next/font/google"
+// import { Analytics } from "@vercel/analytics/next"
+import "./globals.css"
 
-const inter = Inter({
-  subsets: ["latin"],
-  variable: "--font-inter",
-  display: "swap",
-});
-
-const nastaliq = Noto_Nastaliq_Urdu({
-  subsets: ["arabic"],
-  weight: "400",
-  variable: "--font-noto-nastaliq",
-  display: "swap",
-});
+const _geist = Geist({ subsets: ["latin"] })
+const _geistMono = Geist_Mono({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: "Universal Design System for Pakistan",
+  title: "AgriRate - Intelligent Farming Platform",
   description:
-    "Reusable tokens, components and patterns for public-benefit digital services across Pakistan.",
-};
+    "Empower your farm with AI-driven market insights, real-time weather data, and sustainable farming practices. AgriRate for Pakistani farmers.",
+  generator: "v0.app",
+}
 
 export default function RootLayout({
   children,
 }: Readonly<{
-  children: React.ReactNode;
+  children: React.ReactNode
 }>) {
   return (
     <html lang="en">
-      <body className={`${inter.variable} ${nastaliq.variable} antialiased`}>
+      <body className={`font-sans antialiased`}>
         {children}
+        {/* <Analytics /> */}
       </body>
     </html>
-  );
+  )
 }
