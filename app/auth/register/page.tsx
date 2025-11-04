@@ -8,6 +8,8 @@ import { User, Phone, Mail, Lock } from 'lucide-react';
 import ModernInput from '@/app/components/ModernInput';
 import ModernButton from '@/app/components/ModernButton';
 import { useAuth } from '@/app/lib/context/AuthContext';
+import { authApi } from '@/app/lib/api/endpoints';
+import { authHelpers } from '@/app/lib/api/client';
 
 export default function FarmerRegisterPage() {
   const router = useRouter();
@@ -52,10 +54,31 @@ export default function FarmerRegisterPage() {
     setIsLoading(true);
 
     try {
-      await register(formData);
-      router.push('/farmer/dashboard');
+      // Use authApi to register
+      const response = await authApi.register(formData);
+      
+      if (response.success && response.data) {
+        // Store token and user data
+        authHelpers.setToken(response.data.token);
+        authHelpers.setUser(response.data.user as unknown as Record<string, unknown>);
+        
+        // Call context register to update state
+        await register(formData);
+        
+        // Redirect to dashboard based on role
+        if (response.data.user.role === 'farmer') {
+          router.push('/farmer/dashboard');
+        } else if (response.data.user.role === 'admin') {
+          router.push('/admin/dashboard');
+        } else {
+          router.push('/');
+        }
+      } else {
+        throw new Error(response.message || 'Registration failed');
+      }
     } catch (error: unknown) {
-      const errorMessage = error instanceof Error ? error.message : 'Registration failed';
+      console.error('Registration error:', error);
+      const errorMessage = error instanceof Error ? error.message : 'Registration failed. Please try again.';
       setErrors({ submit: errorMessage });
     } finally {
       setIsLoading(false);

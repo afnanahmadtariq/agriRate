@@ -8,6 +8,8 @@ import { Phone, Lock, Mail } from 'lucide-react';
 import ModernInput from '@/app/components/ModernInput';
 import ModernButton from '@/app/components/ModernButton';
 import { useAuth } from '@/app/lib/context/AuthContext';
+import { authApi } from '@/app/lib/api/endpoints';
+import { authHelpers } from '@/app/lib/api/client';
 
 export default function FarmerLoginPage() {
   const router = useRouter();
@@ -66,26 +68,59 @@ export default function FarmerLoginPage() {
     setIsLoading(true);
 
     try {
-      // For login, we can use the credential as-is
-      // The backend should handle both email and phone
-      await login(formData.credential, formData.password);
+      // Use authApi to login
+      // Convert credential to phone_number format for API
+      const loginData = {
+        phone_number: formData.credential.includes('@') ? '' : formData.credential,
+        password: formData.password,
+      };
       
-      // Get the user from localStorage to check role
-      const savedUser = localStorage.getItem('user');
-      if (savedUser) {
-        const user = JSON.parse(savedUser);
-        if (user.role === 'farmer') {
-          router.push('/farmer/dashboard');
-        } else if (user.role === 'admin') {
-          router.push('/admin/dashboard');
+      // If email is provided, we need to handle it differently
+      // For now, assuming backend accepts phone_number primarily
+      if (!formData.credential.includes('@')) {
+        const response = await authApi.login(loginData);
+        
+        if (response.success && response.data) {
+          // Store token and user data
+          authHelpers.setToken(response.data.token);
+          authHelpers.setUser(response.data.user as unknown as Record<string, unknown>);
+          
+          // Call context login to update state
+          await login(formData.credential, formData.password);
+          
+          // Redirect based on role
+          const user = response.data.user;
+          if (user.role === 'farmer') {
+            router.push('/farmer/dashboard');
+          } else if (user.role === 'admin') {
+            router.push('/admin/dashboard');
+          } else {
+            router.push('/');
+          }
         } else {
-          router.push('/');
+          throw new Error(response.message || 'Login failed');
         }
       } else {
-        router.push('/farmer/dashboard');
+        // Fallback to context login for email
+        await login(formData.credential, formData.password);
+        
+        const savedUser = localStorage.getItem('user');
+        if (savedUser) {
+          const user = JSON.parse(savedUser);
+          if (user.role === 'farmer') {
+            router.push('/farmer/dashboard');
+          } else if (user.role === 'admin') {
+            router.push('/admin/dashboard');
+          } else {
+            router.push('/');
+          }
+        } else {
+          router.push('/farmer/dashboard');
+        }
       }
     } catch (error: unknown) {
-      const errorMessage = error instanceof Error ? error.message : 'Login failed';
+      console.error('Login error:', error);
+      const errorMessage = error instanceof Error ? error.message : 'Login failed. Please check your credentials.';
       setErrors({ submit: errorMessage });
     } finally {
       setIsLoading(false);
