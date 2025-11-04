@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from 'react';
-import { Search, Plus, Heart, MessageCircle, Eye } from 'lucide-react';
+import { Search, Plus, Heart, MessageCircle, Eye, Trash2 } from 'lucide-react';
 import ProtectedRoute from '@/app/components/shared/ProtectedRoute';
 import DashboardLayout from '@/app/components/shared/DashboardLayout';
 import ModernCard from '@/app/components/ModernCard';
@@ -16,15 +16,6 @@ import { useAuth } from '@/app/lib/context/AuthContext';
 
 export default function ForumPage() {
   const { user } = useAuth();
-  const [searchTerm, setSearchTerm] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('all');
-  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
-  const [selectedPost, setSelectedPost] = useState<typeof mockPosts[0] | null>(null);
-  const [newPost, setNewPost] = useState({
-    title: '',
-    body: '',
-    category: 'General',
-  });
 
   // Mock data
   const mockPosts = [
@@ -94,7 +85,19 @@ export default function ForumPage() {
     },
   ];
 
-  const filteredPosts = mockPosts.filter((post) => {
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('all');
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [selectedPost, setSelectedPost] = useState<typeof mockPosts[0] | null>(null);
+  const [commentText, setCommentText] = useState('');
+  const [newPost, setNewPost] = useState({
+    title: '',
+    body: '',
+    category: 'General',
+  });
+  const [posts, setPosts] = useState(mockPosts);
+
+  const filteredPosts = posts.filter((post) => {
     const matchesSearch =
       post.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
       post.body.toLowerCase().includes(searchTerm.toLowerCase());
@@ -102,6 +105,64 @@ export default function ForumPage() {
       selectedCategory === 'all' || post.category === selectedCategory;
     return matchesSearch && matchesCategory;
   });
+
+  const handleLikePost = (postId: string) => {
+    setPosts(posts.map(post => 
+      post._id === postId 
+        ? { ...post, likes: post.likes + 1 }
+        : post
+    ));
+    // Update selectedPost if it's being viewed
+    if (selectedPost && selectedPost._id === postId) {
+      setSelectedPost({ ...selectedPost, likes: selectedPost.likes + 1 });
+    }
+  };
+
+  const handleAddComment = (postId: string) => {
+    if (!commentText.trim() || !user) return;
+
+    const newComment = {
+      comment_id: Date.now().toString(),
+      user_name: user.full_name || 'Anonymous',
+      comment_text: commentText,
+      created_at: new Date().toISOString(),
+    };
+
+    setPosts(posts.map(post => 
+      post._id === postId 
+        ? { ...post, comments: [...(post.comments || []), newComment] }
+        : post
+    ));
+
+    // Update selectedPost if it's being viewed
+    if (selectedPost && selectedPost._id === postId) {
+      setSelectedPost({
+        ...selectedPost,
+        comments: [...(selectedPost.comments || []), newComment],
+      });
+    }
+
+    setCommentText('');
+  };
+
+  const handleDeleteComment = (postId: string, commentId: string) => {
+    setPosts(posts.map(post =>
+      post._id === postId
+        ? {
+            ...post,
+            comments: post.comments?.filter(c => c.comment_id !== commentId) || [],
+          }
+        : post
+    ));
+
+    // Update selectedPost if it's being viewed
+    if (selectedPost && selectedPost._id === postId) {
+      setSelectedPost({
+        ...selectedPost,
+        comments: selectedPost.comments?.filter(c => c.comment_id !== commentId) || [],
+      });
+    }
+  };
 
   const handleCreatePost = () => {
     // Handle post creation
@@ -201,7 +262,13 @@ export default function ForumPage() {
 
                     {/* Post Stats */}
                     <div className="flex items-center gap-4 text-sm text-[var(--color-text-muted)]">
-                      <button className="flex items-center gap-1 hover:text-[var(--color-primary)] transition-colors">
+                      <button 
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleLikePost(post._id);
+                        }}
+                        className="flex items-center gap-1 hover:text-[var(--color-primary)] transition-colors"
+                      >
                         <Heart className="w-4 h-4" />
                         <span>{post.likes}</span>
                       </button>
@@ -285,7 +352,10 @@ export default function ForumPage() {
 
               {/* Post Stats */}
               <div className="flex items-center gap-6 pt-4 border-t border-[var(--color-border)] text-sm text-[var(--color-text-muted)]">
-                <button className="flex items-center gap-2 hover:text-[var(--color-primary)] transition-colors">
+                <button 
+                  onClick={() => handleLikePost(selectedPost._id)}
+                  className="flex items-center gap-2 hover:text-[var(--color-primary)] transition-colors"
+                >
                   <Heart className="w-4 h-4" />
                   <span>{selectedPost.likes}</span>
                 </button>
@@ -320,6 +390,13 @@ export default function ForumPage() {
                             {comment.comment_text}
                           </p>
                         </div>
+                        <button
+                          onClick={() => handleDeleteComment(selectedPost._id, comment.comment_id)}
+                          className="text-[var(--color-text-muted)] hover:text-[var(--color-error)] transition-colors shrink-0"
+                          title="Delete comment"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
                       </div>
                     ))}
                   </div>
@@ -342,6 +419,8 @@ export default function ForumPage() {
                   <Textarea
                     placeholder="Write a comment..."
                     rows={3}
+                    value={commentText}
+                    onChange={(e) => setCommentText(e.target.value)}
                     className="flex-1"
                   />
                 </div>
@@ -356,6 +435,7 @@ export default function ForumPage() {
                   <ModernButton
                     variant="primary"
                     size="sm"
+                    onClick={() => handleAddComment(selectedPost._id)}
                   >
                     Post Comment
                   </ModernButton>
