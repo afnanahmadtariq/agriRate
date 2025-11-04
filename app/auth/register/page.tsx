@@ -120,24 +120,6 @@ export default function RegisterPage() {
               icon={<Mail className="w-5 h-5" />}
             />
 
-            <Select
-              id="role"
-              label="I am a"
-              value={formData.role}
-              onChange={(e) =>
-                setFormData({
-                  ...formData,
-                  role: e.target.value as 'farmer' | 'admin' | 'expert',
-                })
-              }
-              options={[
-                { value: 'farmer', label: 'Farmer' },
-                { value: 'expert', label: 'Agricultural Expert' },
-                { value: 'admin', label: 'Administrator' },
-              ]}
-              required
-            />
-
             <ModernInput
               id="password"
               label="Password"

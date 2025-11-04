@@ -94,10 +94,10 @@ export default function AdminDashboard() {
             {/* Welcome Header */}
             <div className="flex items-center justify-between">
               <div>
-                <h1 className="text-3xl font-bold text-[var(--color-text)] mb-2">
+                <h1 className="text-3xl font-bold text-(--color-text) mb-2">
                   Admin Dashboard
                 </h1>
-                <p className="text-[var(--color-text-secondary)]">
+                <p className="text-(--color-text-secondary)">
                   Manage your AgriRate platform
                 </p>
               </div>
@@ -112,7 +112,7 @@ export default function AdminDashboard() {
                 title="Total Users"
                 value={stats.totalUsers.toLocaleString()}
                 change={12.5}
-                icon={<Users className="w-6 h-6 text-[var(--color-primary)]" />}
+                icon={<Users className="w-6 h-6 text-(--color-primary)" />}
                 variant="info"
               />
               <StatsCard
@@ -120,7 +120,7 @@ export default function AdminDashboard() {
                 value={stats.totalPosts.toLocaleString()}
                 change={8.3}
                 icon={
-                  <MessageSquare className="w-6 h-6 text-[var(--color-success)]" />
+                  <MessageSquare className="w-6 h-6 text-(--color-success)" />
                 }
                 variant="success"
               />
@@ -128,13 +128,13 @@ export default function AdminDashboard() {
                 title="Market Rates"
                 value={stats.totalRates.toLocaleString()}
                 change={5.2}
-                icon={<TrendingUp className="w-6 h-6 text-[var(--color-warning)]" />}
+                icon={<TrendingUp className="w-6 h-6 text-(--color-warning)" />}
                 variant="warning"
               />
               <StatsCard
                 title="Active Now"
                 value={stats.activeUsers.toLocaleString()}
-                icon={<Users className="w-6 h-6 text-[var(--color-info)]" />}
+                icon={<Users className="w-6 h-6 text-(--color-info)" />}
               />
             </div>
 
@@ -150,39 +150,39 @@ export default function AdminDashboard() {
 
               {/* Quick Stats */}
               <ModernCard>
-                <h3 className="text-lg font-semibold text-[var(--color-text)] mb-4">
+                <h3 className="text-lg font-semibold text-(--color-text) mb-4">
                   Platform Overview
                 </h3>
                 <div className="space-y-4">
-                  <div className="flex items-center justify-between p-3 rounded-lg bg-[var(--color-surface-alt)]">
-                    <span className="text-sm font-medium text-[var(--color-text)]">
+                  <div className="flex items-center justify-between p-3 rounded-lg bg-(--color-surface-alt)">
+                    <span className="text-sm font-medium text-(--color-text)">
                       Farmers
                     </span>
-                    <span className="text-lg font-bold text-[var(--color-primary)]">
+                    <span className="text-lg font-bold text-(--color-primary)">
                       1,089
                     </span>
                   </div>
-                  <div className="flex items-center justify-between p-3 rounded-lg bg-[var(--color-surface-alt)]">
-                    <span className="text-sm font-medium text-[var(--color-text)]">
+                  <div className="flex items-center justify-between p-3 rounded-lg bg-(--color-surface-alt)">
+                    <span className="text-sm font-medium text-(--color-text)">
                       Experts
                     </span>
-                    <span className="text-lg font-bold text-[var(--color-primary)]">
+                    <span className="text-lg font-bold text-(--color-primary)">
                       47
                     </span>
                   </div>
-                  <div className="flex items-center justify-between p-3 rounded-lg bg-[var(--color-surface-alt)]">
-                    <span className="text-sm font-medium text-[var(--color-text)]">
+                  <div className="flex items-center justify-between p-3 rounded-lg bg-(--color-surface-alt)">
+                    <span className="text-sm font-medium text-(--color-text)">
                       Forum Posts
                     </span>
-                    <span className="text-lg font-bold text-[var(--color-primary)]">
+                    <span className="text-lg font-bold text-(--color-primary)">
                       432
                     </span>
                   </div>
-                  <div className="flex items-center justify-between p-3 rounded-lg bg-[var(--color-surface-alt)]">
-                    <span className="text-sm font-medium text-[var(--color-text)]">
+                  <div className="flex items-center justify-between p-3 rounded-lg bg-(--color-surface-alt)">
+                    <span className="text-sm font-medium text-(--color-text)">
                       Articles
                     </span>
-                    <span className="text-lg font-bold text-[var(--color-primary)]">
+                    <span className="text-lg font-bold text-(--color-primary)">
                       78
                     </span>
                   </div>
@@ -193,7 +193,7 @@ export default function AdminDashboard() {
             {/* Recent Market Rates */}
             <ModernCard>
               <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-semibold text-[var(--color-text)]">
+                <h3 className="text-lg font-semibold text-(--color-text)">
                   Recent Market Rates
                 </h3>
                 <ModernButton variant="secondary" size="sm">
