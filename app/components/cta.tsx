@@ -32,7 +32,7 @@ export default function CTA() {
             </div>
             <h2 style={{ marginBottom: 'var(--space-3)' }}>Ready to Transform Your Farm?</h2>
             <p style={{ fontSize: '1.1875rem', color: 'var(--color-text-secondary)', maxWidth: '36rem', margin: '0 auto', lineHeight: 1.7 }}>
-              Join <strong style={{ color: 'var(--color-primary)' }}>10,000+</strong> Pakistani farmers already benefiting from AgriRate's intelligent solutions.
+              Join <strong style={{ color: 'var(--color-primary)' }}>10,000+</strong> Pakistani farmers already benefiting from AgriRate&apos;s intelligent solutions.
             </p>
           </div>
           

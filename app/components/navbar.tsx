@@ -43,9 +43,12 @@ export default function Navbar({ isDark, toggleTheme }: NavbarProps) {
             >
               {isDark ? <Sun size={20} /> : <Moon size={20} />}
             </button>
-            <button className="btn btn-primary" style={{ display: 'none' }} id="nav-cta">
+            <a href="/auth/login" className="btn btn-secondary" style={{ display: 'none' }} id="nav-cta">
+              Sign In
+            </a>
+            <a href="/auth/register" className="btn btn-primary" style={{ display: 'none', marginLeft: 'var(--space-1)' }} id="nav-cta">
               Get Started
-            </button>
+            </a>
             <button onClick={() => setMobileOpen(!mobileOpen)} style={{ padding: 'var(--space-1)' }} className="mobile-menu-btn">
               {mobileOpen ? <X size={24} /> : <Menu size={24} />}
             </button>

@@ -8,7 +8,7 @@ export default function Hero() {
       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', gap: 'var(--space-5)', maxWidth: '56rem', margin: '0 auto' }}>
         <div>
           <span className="badge badge-success" style={{ borderRadius: '9999px', fontSize: '0.875rem' }}>
-            🇵🇰 Pakistan's Intelligent Farming Platform
+            🇵🇰 Pakistan&apos;s Intelligent Farming Platform
           </span>
         </div>
         
