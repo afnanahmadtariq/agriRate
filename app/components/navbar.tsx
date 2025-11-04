@@ -2,6 +2,7 @@
 
 import { Sun, Moon, Menu, X } from "lucide-react"
 import { useState } from "react"
+import Link from "next/link"
 
 interface NavbarProps {
   isDark: boolean
@@ -10,6 +11,10 @@ interface NavbarProps {
 
 export default function Navbar({ isDark, toggleTheme }: NavbarProps) {
   const [mobileOpen, setMobileOpen] = useState(false)
+
+  const handleNavClick = () => {
+    setMobileOpen(false)
+  }
 
   return (
     <nav style={{ position: 'fixed', width: '100%', top: 0, zIndex: 50, backgroundColor: 'rgba(var(--color-surface), 0.95)', backdropFilter: 'blur(12px)', borderBottom: '1px solid var(--color-border)', boxShadow: 'var(--shadow-sm)' }}>
@@ -22,7 +27,7 @@ export default function Navbar({ isDark, toggleTheme }: NavbarProps) {
             <span style={{ fontWeight: 700, fontSize: '1.125rem', color: 'var(--color-text)' }}>AgriRate</span>
           </a>
 
-          <div style={{ display: 'none', alignItems: 'center', gap: 'var(--space-5)' }} className="nav-links">
+          <div style={{ alignItems: 'center', gap: 'var(--space-5)' }} className="nav-links">
             <a href="#features" style={{ fontSize: '0.875rem', color: 'var(--color-text-muted)' }}>
               Features
             </a>
@@ -43,9 +48,11 @@ export default function Navbar({ isDark, toggleTheme }: NavbarProps) {
             >
               {isDark ? <Sun size={20} /> : <Moon size={20} />}
             </button>
-            <button className="btn btn-primary" style={{ display: 'none' }} id="nav-cta">
-              Get Started
-            </button>
+            <Link href="/register">
+              <button className="btn btn-primary" id="nav-cta">
+                Get Started
+              </button>
+            </Link>
             <button onClick={() => setMobileOpen(!mobileOpen)} style={{ padding: 'var(--space-1)' }} className="mobile-menu-btn">
               {mobileOpen ? <X size={24} /> : <Menu size={24} />}
             </button>
@@ -56,25 +63,30 @@ export default function Navbar({ isDark, toggleTheme }: NavbarProps) {
           <div className="mobile-menu fade-in" style={{ paddingBottom: 'var(--space-2)', borderTop: '1px solid var(--color-border)' }}>
             <a
               href="#features"
+              onClick={handleNavClick}
               style={{ display: 'block', padding: 'var(--space-1) 0', fontSize: '0.875rem', color: 'var(--color-text-muted)' }}
             >
               Features
             </a>
             <a
               href="#pricing"
+              onClick={handleNavClick}
               style={{ display: 'block', padding: 'var(--space-1) 0', fontSize: '0.875rem', color: 'var(--color-text-muted)' }}
             >
               Pricing
             </a>
             <a
               href="#testimonials"
+              onClick={handleNavClick}
               style={{ display: 'block', padding: 'var(--space-1) 0', fontSize: '0.875rem', color: 'var(--color-text-muted)' }}
             >
               Testimonials
             </a>
-            <button className="btn btn-primary" style={{ width: '100%', marginTop: 'var(--space-2)' }}>
-              Get Started
-            </button>
+            <Link href="/register" style={{ width: '100%', marginTop: 'var(--space-2)' }}>
+              <button className="btn btn-primary" style={{ width: '100%' }}>
+                Get Started
+              </button>
+            </Link>
           </div>
         )}
       </div>

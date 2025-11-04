@@ -3,6 +3,10 @@
 
 :root {
   --base-unit: 0.5rem;
+  /* AgriRate brand colors */
+  --agri-dark: #1e3a2a;
+  --agri-orange: #f4a300;
+
   /* Primary emerald colours */
   --color-emerald: #01411c;
   --color-emerald-light: #0f5132;
@@ -465,5 +469,20 @@ html.dark {
   /* Heading balance */
   h1, h2, h3 {
     text-wrap: balance;
+  }
+
+  /* Additional animations from AgriRate */
+  @keyframes pulse-success {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+  }
+  .animate-pulse-success {
+    animation: pulse-success 1s ease-in-out;
+  }
+  .animate-fade-in {
+    animation: fadeIn 0.5s ease-in;
+  }
+  .animate-slide-up {
+    animation: slideUp 0.4s ease-out;
   }
 }
