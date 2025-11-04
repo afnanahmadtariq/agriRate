@@ -21,17 +21,33 @@ export default function MarketRatesPage() {
   const [selectedRate, setSelectedRate] = useState<MarketRate | null>(null);
   const [categoryFilter, setCategoryFilter] = useState('all');
   const [regionFilter, setRegionFilter] = useState('all');
+  const [marketFilter, setMarketFilter] = useState('all');
 
   const [formData, setFormData] = useState({
     crop_name: '',
     category: 'Grain' as 'Fruit' | 'Vegetable' | 'Grain',
     region: '',
+    market: '',
     date: new Date().toISOString().split('T')[0],
     min_price: '',
     max_price: '',
     avg_price: '',
     source: 'Admin',
   });
+
+  // Market data by region
+  const marketsByRegion: Record<string, string[]> = {
+    Multan: ['Multan Mandi', 'Shah Rukn-e-Alam Market', 'Vehari Road Market', 'New Multan'],
+    Lahore: ['Badami Bagh', 'Azam Cloth Market', 'Shahdara Market', 'Model Town Market'],
+    Karachi: ['Sabzi Mandi', 'Empress Market', 'Saddar Market', 'SITE Market'],
+    Faisalabad: ['Jhang Bazar', 'Rail Bazar', 'Aminpur Bazar', 'D-Ground Market'],
+    Islamabad: ['Sabzi Mandi', 'F-6 Market', 'I-8 Market', 'F-10 Market'],
+    Rawalpindi: ['Raja Bazar', 'Moti Bazar', 'Committee Chowk', 'Saddar Bazar'],
+    Peshawar: ['Qissa Khwani Bazar', 'Saddar Bazar', 'Hashtnagri Market', 'Charsadda Road'],
+    Quetta: ['Sariab Road Market', 'Kandahari Bazar', 'Joint Road Market', 'Brewery Road'],
+  };
+
+  const availableMarkets = formData.region ? marketsByRegion[formData.region] || [] : [];
 
   useEffect(() => {
     setTimeout(() => setIsLoading(false), 1000);
@@ -44,6 +60,7 @@ export default function MarketRatesPage() {
       crop_name: 'Wheat',
       category: 'Grain',
       region: 'Multan',
+      market: 'Multan Mandi',
       date: '2025-11-04',
       min_price: 2800,
       max_price: 2900,
@@ -58,6 +75,7 @@ export default function MarketRatesPage() {
       crop_name: 'Rice',
       category: 'Grain',
       region: 'Lahore',
+      market: 'Badami Bagh',
       date: '2025-11-04',
       min_price: 3100,
       max_price: 3300,
@@ -72,6 +90,7 @@ export default function MarketRatesPage() {
       crop_name: 'Tomato',
       category: 'Vegetable',
       region: 'Karachi',
+      market: 'Sabzi Mandi',
       date: '2025-11-04',
       min_price: 40,
       max_price: 60,
@@ -86,6 +105,7 @@ export default function MarketRatesPage() {
       crop_name: 'Mango',
       category: 'Fruit',
       region: 'Multan',
+      market: 'Shah Rukn-e-Alam Market',
       date: '2025-11-03',
       min_price: 120,
       max_price: 180,
@@ -94,6 +114,21 @@ export default function MarketRatesPage() {
       created_by: 'admin',
       created_at: '2025-11-03T14:00:00Z',
       updated_at: '2025-11-03T14:00:00Z',
+    },
+    {
+      rate_id: 5,
+      crop_name: 'Wheat',
+      category: 'Grain',
+      region: 'Lahore',
+      market: 'Shahdara Market',
+      date: '2025-11-04',
+      min_price: 2850,
+      max_price: 2950,
+      avg_price: 2900,
+      source: 'Manual Entry',
+      created_by: 'admin',
+      created_at: '2025-11-04T10:30:00Z',
+      updated_at: '2025-11-04T10:30:00Z',
     },
   ];
 
@@ -110,14 +145,16 @@ export default function MarketRatesPage() {
   const filteredRates = mockRates.filter((rate) => {
     const matchesCategory = categoryFilter === 'all' || rate.category === categoryFilter;
     const matchesRegion = regionFilter === 'all' || rate.region === regionFilter;
-    return matchesCategory && matchesRegion;
+    const matchesMarket = marketFilter === 'all' || rate.market === marketFilter;
+    return matchesCategory && matchesRegion && matchesMarket;
   });
 
   const columns = [
-    { key: 'crop_name', header: 'Crop' },
+    { key: 'crop_name', header: 'Crop', sortable: true },
     {
       key: 'category',
       header: 'Category',
+      sortable: true,
       render: (rate: MarketRate) => (
         <span className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium ${
           rate.category === 'Grain'
@@ -130,20 +167,38 @@ export default function MarketRatesPage() {
         </span>
       ),
     },
-    { key: 'region', header: 'Region' },
+    { 
+      key: 'region', 
+      header: 'Region',
+      sortable: true,
+      render: (rate: MarketRate) => (
+        <div>
+          <p className="font-medium text-(--color-text)">{rate.region}</p>
+          {rate.market && (
+            <p className="text-xs text-(--color-text-secondary)">{rate.market}</p>
+          )}
+        </div>
+      ),
+    },
     {
       key: 'min_price',
       header: 'Min Price',
+      sortable: true,
+      sortValue: (item: MarketRate) => item.min_price,
       render: (rate: MarketRate) => formatCurrency(rate.min_price),
     },
     {
       key: 'max_price',
       header: 'Max Price',
+      sortable: true,
+      sortValue: (item: MarketRate) => item.max_price,
       render: (rate: MarketRate) => formatCurrency(rate.max_price),
     },
     {
       key: 'avg_price',
       header: 'Avg Price',
+      sortable: true,
+      sortValue: (item: MarketRate) => item.avg_price,
       render: (rate: MarketRate) => (
         <span className="font-semibold text-(--color-primary)">
           {formatCurrency(rate.avg_price)}
@@ -153,6 +208,8 @@ export default function MarketRatesPage() {
     {
       key: 'date',
       header: 'Date',
+      sortable: true,
+      sortValue: (item: MarketRate) => new Date(item.date).getTime(),
       render: (rate: MarketRate) => formatDateTime(rate.date, 'MMM dd, yyyy'),
     },
     {
@@ -186,6 +243,7 @@ export default function MarketRatesPage() {
       crop_name: '',
       category: 'Grain',
       region: '',
+      market: '',
       date: new Date().toISOString().split('T')[0],
       min_price: '',
       max_price: '',
@@ -220,10 +278,12 @@ export default function MarketRatesPage() {
                   Add, edit, and manage crop prices across regions
                 </p>
               </div>
-              <div className="flex gap-3">
+              <div className="flex items-center gap-3">
                 <ModernButton variant="secondary" size="md">
-                  <Download className="w-5 h-5 mr-2" />
-                  Export
+                  <div className="flex items-center">
+                    <Download className="w-5 h-5 mr-2" />
+                    <span>Export</span>
+                  </div>
                 </ModernButton>
                 <ModernButton
                   variant="primary"
@@ -233,8 +293,10 @@ export default function MarketRatesPage() {
                     setIsModalOpen(true);
                   }}
                 >
-                  <Plus className="w-5 h-5 mr-2" />
-                  Add Rate
+                  <div className="flex items-center">
+                    <Plus className="w-5 h-5 mr-2" />
+                    <span>Add Rate</span>
+                  </div>
                 </ModernButton>
               </div>
             </div>
@@ -309,15 +371,35 @@ export default function MarketRatesPage() {
                 />
                 <Select
                   value={regionFilter}
-                  onChange={(e) => setRegionFilter(e.target.value)}
+                  onChange={(e) => {
+                    setRegionFilter(e.target.value);
+                    setMarketFilter('all'); // Reset market filter when region changes
+                  }}
                   options={[
                     { value: 'all', label: 'All Regions' },
                     { value: 'Multan', label: 'Multan' },
                     { value: 'Lahore', label: 'Lahore' },
                     { value: 'Karachi', label: 'Karachi' },
                     { value: 'Faisalabad', label: 'Faisalabad' },
+                    { value: 'Islamabad', label: 'Islamabad' },
+                    { value: 'Rawalpindi', label: 'Rawalpindi' },
+                    { value: 'Peshawar', label: 'Peshawar' },
+                    { value: 'Quetta', label: 'Quetta' },
                   ]}
                 />
+                {regionFilter !== 'all' && (
+                  <Select
+                    value={marketFilter}
+                    onChange={(e) => setMarketFilter(e.target.value)}
+                    options={[
+                      { value: 'all', label: 'All Markets' },
+                      ...(marketsByRegion[regionFilter] || []).map((market) => ({
+                        value: market,
+                        label: market,
+                      })),
+                    ]}
+                  />
+                )}
               </div>
             </ModernCard>
 
@@ -373,17 +455,53 @@ export default function MarketRatesPage() {
                   />
                 </div>
 
-                <ModernInput
-                  id="region"
-                  label="Region"
-                  type="text"
-                  placeholder="e.g., Multan, Lahore"
-                  value={formData.region}
-                  onChange={(e) =>
-                    setFormData({ ...formData, region: e.target.value })
-                  }
-                  required
-                />
+                <div>
+                  <label className="block text-sm font-medium text-(--color-text) mb-2">
+                    Region
+                  </label>
+                  <Select
+                    value={formData.region}
+                    onChange={(e) => {
+                      setFormData({
+                        ...formData,
+                        region: e.target.value,
+                        market: '', // Reset market when region changes
+                      });
+                    }}
+                    options={[
+                      { value: '', label: 'Select Region' },
+                      { value: 'Multan', label: 'Multan' },
+                      { value: 'Lahore', label: 'Lahore' },
+                      { value: 'Karachi', label: 'Karachi' },
+                      { value: 'Faisalabad', label: 'Faisalabad' },
+                      { value: 'Islamabad', label: 'Islamabad' },
+                      { value: 'Rawalpindi', label: 'Rawalpindi' },
+                      { value: 'Peshawar', label: 'Peshawar' },
+                      { value: 'Quetta', label: 'Quetta' },
+                    ]}
+                  />
+                </div>
+
+                {formData.region && (
+                  <div>
+                    <label className="block text-sm font-medium text-(--color-text) mb-2">
+                      Market (Optional)
+                    </label>
+                    <Select
+                      value={formData.market}
+                      onChange={(e) =>
+                        setFormData({ ...formData, market: e.target.value })
+                      }
+                      options={[
+                        { value: '', label: 'General / All Markets' },
+                        ...availableMarkets.map((market) => ({
+                          value: market,
+                          label: market,
+                        })),
+                      ]}
+                    />
+                  </div>
+                )}
 
                 <ModernInput
                   id="date"

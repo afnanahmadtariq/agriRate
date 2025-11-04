@@ -86,6 +86,7 @@ export default function UsersManagementPage() {
     {
       key: 'full_name',
       header: 'Name',
+      sortable: true,
       render: (user: User) => (
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-full bg-(--color-primary-light) flex items-center justify-center">
@@ -103,11 +104,13 @@ export default function UsersManagementPage() {
     {
       key: 'email',
       header: 'Email',
+      sortable: true,
       render: (user: User) => user.email || <span className="text-(--color-text-muted)">N/A</span>,
     },
     {
       key: 'role',
       header: 'Role',
+      sortable: true,
       render: (user: User) => (
         <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${
           user.role === 'admin'
@@ -123,6 +126,8 @@ export default function UsersManagementPage() {
     {
       key: 'is_active',
       header: 'Status',
+      sortable: true,
+      sortValue: (user: User) => user.is_active ? 1 : 0,
       render: (user: User) => (
         <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${
           user.is_active
@@ -136,6 +141,8 @@ export default function UsersManagementPage() {
     {
       key: 'created_at',
       header: 'Joined',
+      sortable: true,
+      sortValue: (user: User) => new Date(user.created_at).getTime(),
       render: (user: User) => formatDateTime(user.created_at, 'MMM dd, yyyy'),
     },
     {
@@ -182,8 +189,10 @@ export default function UsersManagementPage() {
                 </p>
               </div>
               <ModernButton variant="primary" size="md">
-                <UserPlus className="w-5 h-5 mr-2" />
-                Add User
+                <div className="flex items-center gap-2">
+                  <UserPlus className="w-5 h-5" />
+                  <span>Add User</span>
+                </div>
               </ModernButton>
             </div>
 
@@ -347,19 +356,19 @@ export default function UsersManagementPage() {
                       className="flex-1"
                     >
                       {selectedUser.is_active ? (
-                        <>
-                          <XCircle className="w-4 h-4 mr-2" />
-                          Deactivate
-                        </>
+                        <div className="flex items-center gap-2">
+                          <XCircle className="w-4 h-4" />
+                          <span>Deactivate</span>
+                        </div>
                       ) : (
-                        <>
-                          <CheckCircle className="w-4 h-4 mr-2" />
-                          Activate
-                        </>
+                        <div className="flex items-center gap-2">
+                          <CheckCircle className="w-4 h-4" />
+                          <span>Activate</span>
+                        </div>
                       )}
                     </ModernButton>
                     <ModernButton variant="secondary" size="md" className="flex-1">
-                      Edit User
+                      <span>Edit User</span>
                     </ModernButton>
                   </div>
                 </div>

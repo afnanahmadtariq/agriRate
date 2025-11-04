@@ -14,7 +14,10 @@ import { formatCurrency, formatDateTime } from '@/app/lib/utils/format';
 
 interface RateData {
   crop_name: string;
+  category: string;
   region: string;
+  min_price: number;
+  max_price: number;
   avg_price: number;
   date: string;
 }
@@ -48,36 +51,116 @@ export default function AdminDashboard() {
   const recentRates = [
     {
       crop_name: 'Wheat',
+      category: 'Grain',
       region: 'Multan',
+      min_price: 2800,
+      max_price: 2900,
       avg_price: 2850,
       date: '2025-11-04',
     },
-    { crop_name: 'Rice', region: 'Lahore', avg_price: 3200, date: '2025-11-04' },
+    {
+      crop_name: 'Rice',
+      category: 'Grain',
+      region: 'Lahore',
+      min_price: 3100,
+      max_price: 3300,
+      avg_price: 3200,
+      date: '2025-11-04',
+    },
     {
       crop_name: 'Cotton',
+      category: 'Grain',
       region: 'Faisalabad',
+      min_price: 8300,
+      max_price: 8700,
       avg_price: 8500,
       date: '2025-11-04',
     },
     {
       crop_name: 'Sugarcane',
+      category: 'Grain',
       region: 'Multan',
+      min_price: 300,
+      max_price: 320,
       avg_price: 310,
+      date: '2025-11-03',
+    },
+    {
+      crop_name: 'Tomato',
+      category: 'Vegetable',
+      region: 'Karachi',
+      min_price: 40,
+      max_price: 60,
+      avg_price: 50,
+      date: '2025-11-04',
+    },
+    {
+      crop_name: 'Mango',
+      category: 'Fruit',
+      region: 'Multan',
+      min_price: 120,
+      max_price: 180,
+      avg_price: 150,
       date: '2025-11-03',
     },
   ];
 
   const rateColumns = [
-    { key: 'crop_name', header: 'Crop' },
-    { key: 'region', header: 'Region' },
+    {
+      key: 'crop_name',
+      header: 'Crop',
+      sortable: true,
+    },
+    {
+      key: 'category',
+      header: 'Category',
+      sortable: true,
+      render: (item: RateData) => (
+        <span className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium ${
+          item.category === 'Grain'
+            ? 'bg-amber-100 text-amber-800'
+            : item.category === 'Vegetable'
+            ? 'bg-green-100 text-green-800'
+            : 'bg-pink-100 text-pink-800'
+        }`}>
+          {item.category}
+        </span>
+      ),
+    },
+    {
+      key: 'region',
+      header: 'Region',
+      sortable: true,
+    },
+    {
+      key: 'min_price',
+      header: 'Min Price',
+      sortable: true,
+      sortValue: (item: RateData) => item.min_price,
+      render: (item: RateData) => formatCurrency(item.min_price),
+    },
+    {
+      key: 'max_price',
+      header: 'Max Price',
+      sortable: true,
+      sortValue: (item: RateData) => item.max_price,
+      render: (item: RateData) => formatCurrency(item.max_price),
+    },
     {
       key: 'avg_price',
-      header: 'Price',
-      render: (item: RateData) => formatCurrency(item.avg_price),
+      header: 'Avg Price',
+      sortable: true,
+      sortValue: (item: RateData) => item.avg_price,
+      render: (item: RateData) => (
+        <span className="font-semibold text-(--color-primary)">
+          {formatCurrency(item.avg_price)}
+        </span>
+      ),
     },
     {
       key: 'date',
       header: 'Date',
+      sortable: true,
       render: (item: RateData) => formatDateTime(item.date, 'MMM dd, yyyy'),
     },
   ];

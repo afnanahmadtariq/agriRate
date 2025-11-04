@@ -1,6 +1,6 @@
 "use client";
 
-import { ReactNode, useState } from 'react';
+import { ReactNode, useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import Image from 'next/image';
@@ -18,6 +18,9 @@ import {
   LogOut,
   ShoppingBag,
   BarChart3,
+  Check,
+  AlertCircle,
+  Info,
 } from 'lucide-react';
 import { useAuth } from '@/app/lib/context/AuthContext';
 import ModernButton from '@/app/components/ModernButton';
@@ -33,10 +36,93 @@ interface DashboardLayoutProps {
   role: 'admin' | 'farmer';
 }
 
+interface Notification {
+  id: number;
+  title: string;
+  message: string;
+  type: 'info' | 'success' | 'warning';
+  time: string;
+  read: boolean;
+}
+
 export default function DashboardLayout({ children, role }: DashboardLayoutProps) {
   const { user, logout } = useAuth();
   const pathname = usePathname();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isNotificationOpen, setIsNotificationOpen] = useState(false);
+  const notificationRef = useRef<HTMLDivElement>(null);
+
+  // Mock notifications
+  const [notifications, setNotifications] = useState<Notification[]>([
+    {
+      id: 1,
+      title: 'Price Alert',
+      message: 'Wheat prices increased by 5% in your region',
+      type: 'info',
+      time: '5 min ago',
+      read: false,
+    },
+    {
+      id: 2,
+      title: 'Weather Update',
+      message: 'Heavy rainfall expected tomorrow in Multan',
+      type: 'warning',
+      time: '1 hour ago',
+      read: false,
+    },
+    {
+      id: 3,
+      title: 'New Message',
+      message: 'Expert replied to your forum post',
+      type: 'success',
+      time: '2 hours ago',
+      read: false,
+    },
+    {
+      id: 4,
+      title: 'Market Trend',
+      message: 'Cotton prices showing downward trend',
+      type: 'info',
+      time: '5 hours ago',
+      read: true,
+    },
+  ]);
+
+  const unreadCount = notifications.filter(n => !n.read).length;
+
+  // Close notification dropdown when clicking outside
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (notificationRef.current && !notificationRef.current.contains(event.target as Node)) {
+        setIsNotificationOpen(false);
+      }
+    }
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  const markAsRead = (id: number) => {
+    setNotifications(notifications.map(n => 
+      n.id === id ? { ...n, read: true } : n
+    ));
+  };
+
+  const markAllAsRead = () => {
+    setNotifications(notifications.map(n => ({ ...n, read: true })));
+  };
+
+  const getNotificationIcon = (type: string) => {
+    switch (type) {
+      case 'success':
+        return <Check className="w-5 h-5 text-green-600" />;
+      case 'warning':
+        return <AlertCircle className="w-5 h-5 text-orange-600" />;
+      default:
+        return <Info className="w-5 h-5 text-blue-600" />;
+    }
+  };
+
 
   const adminNavItems: NavItem[] = [
     { name: 'Dashboard', href: '/admin/dashboard', icon: <Home className="w-5 h-5" /> },
@@ -84,7 +170,7 @@ export default function DashboardLayout({ children, role }: DashboardLayoutProps
     },
     {
       name: 'AgriMart',
-      href: '/agrimart',
+      href: '/farmer/agrimart',
       icon: <ShoppingBag className="w-5 h-5" />,
     },
   ];
@@ -120,10 +206,85 @@ export default function DashboardLayout({ children, role }: DashboardLayoutProps
 
           <div className="flex items-center gap-3">
             {/* Notifications */}
-            <button className="p-2 rounded-lg hover:bg-[var(--color-hover-overlay)] relative">
-              <Bell className="w-5 h-5" />
-              <span className="absolute top-1 right-1 w-2 h-2 bg-[var(--color-error)] rounded-full"></span>
-            </button>
+            <div className="relative" ref={notificationRef}>
+              <button 
+                onClick={() => setIsNotificationOpen(!isNotificationOpen)}
+                className="p-2 rounded-lg hover:bg-[var(--color-hover-overlay)] relative"
+              >
+                <Bell className="w-5 h-5" />
+                {unreadCount > 0 && (
+                  <span className="absolute top-1 right-1 w-2 h-2 bg-[var(--color-error)] rounded-full"></span>
+                )}
+              </button>
+
+              {/* Notification Dropdown */}
+              {isNotificationOpen && (
+                <div className="absolute right-0 mt-2 w-80 max-h-96 bg-(--color-surface) border border-(--color-border) rounded-lg shadow-lg overflow-hidden z-50">
+                  {/* Mark All Read Button */}
+                  {unreadCount > 0 && (
+                    <div className="px-4 py-2 border-b border-(--color-border) bg-(--color-surface-secondary)">
+                      <button
+                        onClick={markAllAsRead}
+                        className="text-xs font-medium text-(--color-primary) hover:underline"
+                      >
+                        Mark all as read
+                      </button>
+                    </div>
+                  )}
+
+                  {/* Notification List */}
+                  <div className="max-h-80 overflow-y-auto">
+                    {notifications.length > 0 ? (
+                      notifications.map((notification) => (
+                        <div
+                          key={notification.id}
+                          onClick={() => markAsRead(notification.id)}
+                          className={`p-4 border-b border-(--color-border) hover:bg-(--color-surface-secondary) cursor-pointer transition-colors ${
+                            !notification.read ? 'bg-(--color-primary-subtle)' : ''
+                          }`}
+                        >
+                          <div className="flex gap-3">
+                            <div className="flex-shrink-0 mt-1">
+                              {getNotificationIcon(notification.type)}
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-start justify-between gap-2">
+                                <h4 className="font-medium text-sm text-(--color-text)">
+                                  {notification.title}
+                                </h4>
+                                {!notification.read && (
+                                  <div className="w-2 h-2 bg-(--color-primary) rounded-full flex-shrink-0 mt-1"></div>
+                                )}
+                              </div>
+                              <p className="text-xs text-(--color-text-secondary) mt-1">
+                                {notification.message}
+                              </p>
+                              <p className="text-xs text-(--color-text-muted) mt-1">
+                                {notification.time}
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                      ))
+                    ) : (
+                      <div className="p-8 text-center">
+                        <Bell className="w-12 h-12 mx-auto mb-3 text-(--color-text-muted) opacity-50" />
+                        <p className="text-sm text-(--color-text-secondary)">No notifications</p>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Footer */}
+                  {notifications.length > 0 && (
+                    <div className="p-3 border-t border-(--color-border) bg-(--color-surface-secondary)">
+                      <button className="w-full text-center text-sm text-(--color-primary) hover:underline">
+                        View all notifications
+                      </button>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
 
             {/* User menu */}
             <div className="flex items-center gap-3 pl-3 border-l border-[var(--color-border)]">
