@@ -168,12 +168,15 @@ export default function MarketRatesPage() {
           {/* Market Rates Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredRates.map((rate) => (
-              <ModernCard
+              <button
                 key={rate.rate_id}
-                hoverable
-                className="cursor-pointer"
                 onClick={() => handleViewTrend(rate)}
+                className="text-left w-full"
               >
+                <ModernCard
+                  hoverable
+                  className="cursor-pointer h-full"
+                >
                 <div className="flex items-start justify-between mb-3">
                   <div>
                     <h3 className="text-xl font-bold text-[var(--color-text)]">
@@ -222,6 +225,7 @@ export default function MarketRatesPage() {
                   </div>
                 </div>
               </ModernCard>
+              </button>
             ))}
           </div>
 
