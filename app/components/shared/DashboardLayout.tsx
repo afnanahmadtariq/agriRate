@@ -18,6 +18,7 @@ import {
   LogOut,
   ShoppingBag,
   BarChart3,
+  LineChart,
   Check,
   AlertCircle,
   Info,
@@ -161,6 +162,11 @@ export default function DashboardLayout({ children, role }: DashboardLayoutProps
       name: 'Smart Advice',
       href: '/farmer/advice',
       icon: <Lightbulb className="w-5 h-5" />,
+    },
+    {
+      name: 'Price Trends',
+      href: '/farmer/price-trends',
+      icon: <LineChart className="w-5 h-5" />,
     },
     { name: 'Forum', href: '/forum', icon: <MessageSquare className="w-5 h-5" /> },
     {
