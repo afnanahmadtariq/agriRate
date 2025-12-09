@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Search, Plus, Heart, MessageCircle, Eye, Trash2 } from 'lucide-react';
 import ProtectedRoute from '@/app/components/shared/ProtectedRoute';
 import DashboardLayout from '@/app/components/shared/DashboardLayout';
@@ -11,91 +11,78 @@ import Select from '@/app/components/ui/Select';
 import Badge from '@/app/components/ui/Badge';
 import Modal from '@/app/components/ui/Modal';
 import Textarea from '@/app/components/ui/Textarea';
+import LoadingSpinner from '@/app/components/ui/LoadingSpinner';
 import { formatRelativeTime } from '@/app/lib/utils/format';
 import { useAuth } from '@/app/lib/context/AuthContext';
+import { forumApi } from '@/app/lib/api/endpoints';
+import type { ForumPost } from '@/app/types';
 
 export default function ForumPage() {
   const { user } = useAuth();
 
-  // Mock data
-  const mockPosts = [
-    {
-      _id: '1',
-      user_name: 'Ahmad Khan',
-      title: 'Best time to plant wheat in Punjab?',
-      body: 'I am planning to plant wheat this season. What is the optimal time for planting in Multan region?',
-      category: 'Crop Advice',
-      language: 'en',
-      likes: 24,
-      created_at: '2025-11-03T10:30:00Z',
-      comments: [
-        {
-          comment_id: '1',
-          user_name: 'Expert Ali',
-          comment_text: 'November is the best time for wheat planting in Punjab.',
-          created_at: '2025-11-03T11:00:00Z',
-        },
-      ],
-    },
-    {
-      _id: '2',
-      user_name: 'Fatima Bibi',
-      title: 'Tomato leaf disease - Need help',
-      body: 'My tomato plants are showing yellow spots on leaves. Can anyone help identify the issue?',
-      category: 'Crop Health',
-      language: 'en',
-      likes: 18,
-      created_at: '2025-11-02T14:20:00Z',
-      comments: [],
-    },
-    {
-      _id: '3',
-      user_name: 'Hassan Raza',
-      title: 'Cotton prices rising - Should I sell now?',
-      body: 'Cotton prices have increased by 10% in the last week. Should I sell my harvest now or wait?',
-      category: 'Market Discussion',
-      language: 'en',
-      likes: 32,
-      created_at: '2025-11-01T09:15:00Z',
-      comments: [
-        {
-          comment_id: '1',
-          user_name: 'Market Expert',
-          comment_text: 'Prices are expected to stabilize. Selling now would be good.',
-          created_at: '2025-11-01T10:00:00Z',
-        },
-        {
-          comment_id: '2',
-          user_name: 'Trader Ahmed',
-          comment_text: 'I agree. The trend shows a plateau coming.',
-          created_at: '2025-11-01T11:30:00Z',
-        },
-      ],
-    },
-    {
-      _id: '4',
-      user_name: 'Zainab Ali',
-      title: 'Modern irrigation techniques for small farms',
-      body: 'Looking for cost-effective irrigation solutions for my 5-acre farm.',
-      category: 'Technology',
-      language: 'en',
-      likes: 15,
-      created_at: '2025-10-31T16:45:00Z',
-      comments: [],
-    },
-  ];
-
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
-  const [selectedPost, setSelectedPost] = useState<typeof mockPosts[0] | null>(null);
+  const [selectedPost, setSelectedPost] = useState<ForumPost | null>(null);
   const [commentText, setCommentText] = useState('');
   const [newPost, setNewPost] = useState({
     title: '',
     body: '',
     category: 'General',
+    language: 'en' as const,
   });
-  const [posts, setPosts] = useState(mockPosts);
+  const [posts, setPosts] = useState<ForumPost[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  // Fetch posts on mount and when filters change
+  const fetchPosts = async () => {
+    try {
+      setIsLoading(true);
+      setError(null);
+      const params: Parameters<typeof forumApi.getPosts>[0] = {
+        limit: 50,
+        sort: 'latest',
+      };
+      
+      if (selectedCategory !== 'all') {
+        params.category = selectedCategory;
+      }
+      
+      if (searchTerm) {
+        params.search = searchTerm;
+      }
+
+      const response = await forumApi.getPosts(params);
+      if (response.success && response.data) {
+        setPosts(response.data);
+      }
+    } catch (err) {
+      console.error('Error fetching posts:', err);
+      setError('Failed to load posts. Please try again.');
+      // Fallback to empty array on error
+      setPosts([]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+  
+  useEffect(() => {
+    fetchPosts();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedCategory]);
+
+  // Debounced search
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (searchTerm !== '') {
+        fetchPosts();
+      }
+    }, 500);
+    
+    return () => clearTimeout(timer);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchTerm]);
 
   const filteredPosts = posts.filter((post) => {
     const matchesSearch =
